@@ -1,0 +1,93 @@
+<div>
+    <header>
+        <nav class="navbar fixed-top navbar-toggleable-md">
+            <div class="container" style="width:100%">
+                <div class="row">
+                    <div class=" navbar-brand">
+                        <img src="assets/img/logo.svg" alt="Responsive image ">
+                    </div>
+                    <button class="btn justify-content-end navbar-toggler-right btn_create_discussion">Создать встречу</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main role="main">
+        <div class="container-fluid text-center">
+            <div class="row">
+                <div id="div_calendar" class=" col-sm-12 col-md-4 col-lg-3 d-flex justify-content-center div_calendar">
+                    <button type="button" id='agodate' class='btn_date_ago' style="display:inline-block" (click)="setPageTimeAgo()"></button>
+                    <button class='current_date btn btn-link' type="button" (click)="showDatepicker()" style="display:inline">
+                        <input type="text" id="iddate" class="input_time" readonly/>
+                        <p id="dateappendix" style="display:inline-block"></p>
+                    </button>
+                    <button style="display:inline-block" type="button" id='nextdate' class='btn_date_next' (click)="setPageTimeNext()"></button>
+                </div>
+                <div id="time_line" class="col-sm-12 col-md-8 col-lg-9 div_time_line">
+                    <label *ngFor="let time of timelimeColumns" class="time_label">{{time}}</label>
+                </div>
+            </div>
+            <div id="main_row" class="row main_row">
+                <div class="col-sm-12 col-md-4 col-lg-3 sidenav">
+                    <div id="listRooms">
+                        <div *ngFor="let floor of floors">
+                            <p class="floors">{{floor.number}} этаж</p>
+                            <div *ngFor="let room of floor.rooms">
+                                <p class="rooms">{{room.room.title}}</p>
+                                <p [ngClass]="{'capacity_full':room.isFull, 'capacity_notfull':!room.isFull}" style="margin-bottom:0rem">до {{room.room.capacity}} человек</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="div_diagram" class="col-sm-12 col-md-8 col-lg-9 diagram">
+                    <table id="diagram_table" style="width:95%; height:200%">
+                        <tr>
+                            <th class="diagram_grid_th" *ngFor="let i of timelimeColumns">
+                        </tr>
+                    </table>
+                    <div style="position:absolute;top:0%;width:100%"> 
+                        <div *ngFor="let floor of floors" style="position:relative;margin-top:0rem;margin-bottom:0rem">
+                            <div style="height:2.65rem"></div>
+                            <div *ngFor="let room of floor.rooms" style="position:relative;height:2.9rem;margin-top:0rem;margin-bottom:0.7rem">
+                                <div style="height:1.3rem"></div>
+                                <div class="div_diagram_meet" style="position:absolute;height:1.6rem"></div>
+                                <button *ngFor="let event of room.events" data-toggle="modal" data-target="#event_info_Modal" class="btn_diagram_meet"  (click)="showEventInfo(event.event)" [ngStyle]="{ 'left.%': event.startPosition, 'width.%': (100 - event.endPosition - event.startPosition) }"></button>
+                                <!-- <div style="position:absolute;top:2.9rem;height:0.7rem"></div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngFor="let floor of floors">
+                        <label class="lb_floor_phone">{{floor.number}} этаж</label>
+                        <div *ngFor="let room of floor.rooms">
+                            <label class="lb_room_phone lb_room_full_phone">{{room.room.title}}</label>
+                        </div>
+                    </div>
+                    <button id="btn_circle" class="btn_circle">
+                        <img src="assets/img/plus-24.ico" alt="Responsive image ">
+                    </button>
+                    <div id="dialogModal" class="dialog_modal"></div>
+                    <div class="modal" id="event_info_Modal" role="dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content  block" id="event_info">
+                            <div class="modal-header">
+                                <label class="modal-title event_title">{{selectedEvent.title}}</label>
+                                <button id="btn_circle" class=" btn_edit">
+                                    <img src="assets/img/edit.svg" alt="Responsive image ">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label class="event_time">{{selectedEvent.dateStart | date:'d MMMM':'':'ru'}}, {{selectedEvent.dateStart | date:'HH:mm'}} - {{selectedEvent.dateEnd | date:'HH:mm'}}</label>
+                                <div class="row" class="row_event_users">
+                                    <div *ngFor="let user of selectedEvent.users" class="col-6 event_user">
+                                        <img class="event_icon_user" src="{{user.avatarUrl}}" alt="Responsive image">
+                                        {{user.login}}
+                                    </div>
+                                    <div class="col-6 event_users">{{selectedEvent.users.length}} участников</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

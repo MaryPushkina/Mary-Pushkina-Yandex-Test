@@ -1,0 +1,331 @@
+body {
+    font-family: 'Open Sans', arial;
+    font-size: 13px;
+    text-align: left;
+    margin-bottom: 60px;
+}
+
+main {
+    padding-top: 60px;
+}
+
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.btn_delete_discussion_desktop {
+    margin: 15px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.btn_save_discussion_redaction_pg_desktop {
+    margin: 15px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.btn_delete_discussion_phone {
+    margin: 15px;
+    background-color: white;
+    color: red;
+}
+
+.row_delete_discussion_phone {
+    background-color: white;
+    display: none;
+    border-bottom: 5px solid #E9ECEF;
+    border-top: 5px solid #E9ECEF;
+}
+
+.btn_create_discussion:active {
+    color: #fff;
+    background-color: #0B00FF;
+    border-color: #0B00FF;
+}
+
+.btn_create_discussion {
+    border-radius: 2px;
+    background-color: #007DFF;
+    color: white;
+}
+
+.btn_create_discussion:focus {
+    color: #fff;
+    background-color: #0059FF;
+    border-color: #0059FF;
+}
+
+.btn_create_discussion:hover {
+    color: #fff;
+    background-color: #0059FF;
+    border-color: #0059FF;
+}
+
+.btn_cancel_discussion {
+    margin: 15px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.btn_close_right {
+    margin-top: 0%;
+    margin-bottom: 10px;
+    touch-action: manipulation;
+    border-color: #ccc;
+    background-image: url('../img/close.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    background-color: #E9ECEF 100%;
+    border: 1px solid transparent;
+}
+
+.p_new_meet {
+    margin-top: 0%;
+    margin-left: 15%;
+    width: 70%;
+    font-weight: bold;
+    color: black;
+    font-size: 20px;
+}
+
+.new_meet_tema {
+    margin-left: 30%;
+}
+
+.input_users {
+    height: 34px;
+    margin-bottom: 1%;
+    width: 65%;
+    margin-left: 30%;
+}
+
+.dataMeetStart {
+    width: 40%;
+    height: 34px;
+    margin-left: 5%;
+}
+
+.dataMeet {
+    margin-left: 15%;
+    height: 34px;
+    width: 75%;
+    margin-bottom: 10%;
+}
+
+.dataMeetEnd {
+    height: 34px;
+    width: 40%;
+}
+
+.startDate_label {
+    padding-left: 10%;
+    width: 45%;
+}
+
+.date_meet_label {
+    margin-left: 15%;
+}
+
+.date_meet_label_phone {
+    margin-left: 15%;
+    display: none;
+}
+
+.data_meet_end_label {
+    padding-left: 10%;
+    width: 15%;
+}
+
+.buttos_meets_label {
+    margin-top: 7%;
+    text-align: left;
+    margin-left: 7%;
+}
+
+.users_meet {
+    margin-left: 30%;
+    margin-top: 7%;
+}
+
+.input_users {
+    height: 34px;
+    margin-bottom: 1%;
+    width: 70%;
+}
+
+.users_btn {
+    margin-top: 5px;
+    margin-left: 1%;
+    margin-bottom: 5%;
+}
+
+.list_users {
+    margin-left: 30%;
+}
+
+.chip {
+    padding: 0 5px;
+    display: inline-block;
+    height: 30px;
+    font-size: 16px;
+    line-height: 20px;
+    border-radius: 25px;
+    background-color: #f1f1f1;
+}
+
+.closeImg {
+    opacity: 0.5;
+    float: right;
+    margin-left: 5px;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+}
+
+.chipIcon {
+    float: left;
+    margin: 0 10px 0 -8px;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+
+.button_meet {
+    /*   margin-left: 7%;
+    margin-bottom: 1%;
+    background-color: #E9ECEF;
+    color: #000000;*/
+    /* margin-left: 7%; */
+    margin-bottom: 1%;
+    background-color: #E9ECEF;
+    color: #000000;
+    width: 80%;
+}
+
+.users_row {
+    margin-bottom: 3%;
+}
+
+.btn_cancel_discussion_redaction_pg {
+    margin: 15px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.event_selected_room {
+    background-color: #007DFF;
+    color: aliceblue;
+    margin-bottom: 1%;
+    width: 80%;
+}
+
+@media screen and (max-width: 575px) {
+    .list_users {
+        margin-left: 10%;
+    }
+    .btn_delete_discussion_desktop {
+        display: none;
+    }
+    .row_delete_discussion_phone {
+        display: block;
+    }
+    .users_row {
+        border-bottom: 5px solid #E9ECEF;
+    }
+    .users_meet {
+        margin-left: 10%;
+        margin-top: 0%;
+    }
+    .input_users {
+        margin-bottom: 3%;
+        margin-left: 10%;
+        margin-right: 10%;
+        width: 80%;
+    }
+    .btn_create_discussion {
+        display: none;
+    }
+    .new_meet_tema {
+        margin-left: 10%;
+    }
+    .p_new_meet {
+        margin-left: 10%;
+        width: 75%;
+    }
+    .date_meet_label_phone {
+        margin-left: 10%;
+        display: block;
+    }
+    .date_meet_label {
+        margin-left: 10%;
+        display: none;
+    }
+    .dataMeet {
+        margin-left: 10%;
+        width: 80%;
+        margin-bottom: 1%;
+    }
+    .dataMeetStart {
+        width: 30%;
+        margin-left: 10%;
+    }
+    .dataMeetEnd {
+        float: none;
+        width: 30%;
+    }
+    .data_meet_end_label {
+        padding-left: 1%;
+        width: 15%;
+    }
+    .btn_cancel_discussion {
+        display: none;
+    }
+    .btn_create_discussion_:focus {
+        color: rgba(0, 0, 0, 0.20);
+        background-color: #E5E5E5;
+        border-color: #E5E5E5;
+    }
+    .btn_create_discussion_:hover {
+        color: rgba(0, 0, 0, 0.20);
+        background-color: #E5E5E5;
+        border-color: #E5E5E5;
+    }
+    .btn_create_discussion_ {
+        margin-bottom: 15px;
+        background-color: #E5E5E5;
+        color: #98A9B9;
+        border-color: #98A9B9;
+    }
+    .btn_create_discussion_:active {
+        color: rgba(0, 0, 0, 0.20);
+        background-color: #98A9B9;
+        border-color: #98A9B9;
+    }
+    .date_meet_label_phone {
+        margin-left: 10%;
+        display: block;
+    }
+    .users_btn {
+        margin-top: 5px;
+        margin-left: 10%;
+    }
+    .buttos_meets_label {
+        margin-top: 0%;
+        margin-left: 10%;
+    }
+    .button_meet {
+        margin-left: 7%;
+        margin-bottom: 1%;
+        width: 85%;
+    }
+    .btn_save_discussion_redaction_pg_desktop {
+        margin: 15px;
+        background-color: #007DFF;
+        color: #f1f1f1;
+    }
+}

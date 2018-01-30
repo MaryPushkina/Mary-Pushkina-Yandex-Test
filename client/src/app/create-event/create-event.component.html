@@ -1,0 +1,96 @@
+<header>
+    <nav class="navbar fixed-top navbar-toggleable-md">
+        <div class="container" style="width:100%">
+            <div class="row">
+                <div class="navbar-brand">
+                    <img src="/assets/img/logo.svg " alt="Responsive image ">
+                </div>
+                <button class="btn justify-content-end navbar-toggler-right btn_create_discussion" (click)="createEvent()">Создать встречу</button>
+            </div>
+        </div>
+    </nav>
+</header>
+<main role="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="justify-content-start p_new_meet">Новая встреча</div>
+            <button type="button" class="d-flex justify-content-end btn_close_right" (click)="cancel()"></button>
+        </div>
+        <div class=" row">
+            <div class="col-sm-6 col-12">
+                <div class="row">
+                    <label class="new_meet_tema" for="inputtema">Тема</label>
+                </div>
+                <div class="row">
+                    <input class="input_users" id="inputtema" type="text" [(ngModel)]="event.title" />
+                </div>
+            </div>
+            <div class="col-sm-6 col-12">
+                <div class="row">
+                    <div class="col-sm-5 col-12">
+                        <div class="row">
+                            <label for="dataMeet" class="date_meet_label">Дата</label>
+                            <label for="dataMeet" class=" date_meet_label_phone">Дата и время</label>
+                        </div>
+                        <div class="row">
+                            <input type="text" class="dataMeet" id="dataMeet" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-12 users_row">
+                        <div class="row">
+                            <label for="dataMeetStart" class="startDate_label">Начало</label>
+                            <label for="dataMeetEnd" class="data_meet_end_label">Конец</label>
+                        </div>
+                        <div class="row mb-3">
+                            <input type="text" class="dataMeetStart" id="dataMeetStart" data-time-format="H:i:s" />
+                            <label for="dataMeet">-</label>
+                            <input type="text" class="dataMeetEnd" id="dataMeetEnd" data-time-format="H:i:s" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class=" row ">
+            <div class="col-sm-6 col-12 users_row">
+                <div class="row ">
+                    <label class="users_meet" for="inputusers">Участники</label>
+                </div>
+                <div class="row ">
+                    <input type="text" id="inputusers" class="input_users" list="list_users" [(ngModel)]="newUserName" (change)="tryAddUser()">
+                    <datalist id="list_users">
+                        <option *ngFor="let user of recommendedUsers" value="{{user.login}}" class="option_user" selected="selected"></option>
+                    </datalist>
+                </div>
+                <div>
+                    <div id="list_button_users" class="list_users">
+                        <div *ngFor="let user of event.users" class="users_btn chip">
+                            {{user.login}}
+                            <img src="assets/img/remove.svg" class="closeImg" (click)="removeUser(user)">
+                            <img src="{{user.avatarUrl}}" class="chipIcon">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-12">
+                <div class="row">
+                    <label class="buttos_meets_label">Рекомендованные переговорки</label>
+                </div>
+                <div class="row ">
+                    <div *ngFor="let room of recommendedRooms" class="col-12">
+                        <button type="button" [ngClass]="{ 'button_meet':true, 'btn':true, 'event_selected_room':isRoomSelected(room)}" (click)="setRoom(room)">
+                            {{formatTime(event.dateStart)}}-{{formatTime(event.dateEnd)}} {{room.title}} {{room.floor}} этаж
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer fixed-bottom" style="border-top: 1px solid #E9ECEF; background-color: white;">
+    <div class="container">
+        <form class="form-inline my-2 my-lg-0 justify-content-center">
+            <button type="button" (click)="cancel()" class="btn btn_cancel_discussion">Отмена</button>
+            <button type="button" (click)="createEvent()" class="btn  btn_create_discussion_">Создать встречу</button>
+        </form>
+    </div>
+</footer>

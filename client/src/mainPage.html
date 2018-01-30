@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+
+    <title>Yandex Test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/jquery-ui.min.css" />
+    <script type="text/javascript " src="js/jquery-ui.js"></script>
+    <script type="text/javascript " src="js/bootstrap-datepicker.ru.min.js"></script>
+</head>
+
+<body>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/event_info.css" />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <header>
+        <nav class="navbar fixed-top navbar-toggleable-md">
+            <div class="container">
+                <div class="row">
+                    <div class=" navbar-brand">
+                        <img src=" img/assets/logo.svg " alt="Responsive image ">
+                    </div>
+                    <button class="btn justify-content-end navbar-toggler-right btn_create_discussion">Создать встречу</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="container-fluid text-center">
+            <div class="row">
+                <div id="div_calendar" class=" col-sm-12	col-md-4	col-lg-3 d-flex justify-content-center div_calendar">
+
+                    <button type="button" id='agodate' class='  btn_date_ago' style="display:inline-block"></button>
+
+                    <button class='current_date btn btn-link' type="button" onclick="showDatepicker()" style="display:inline">
+                            <input type="text" id="iddate"  class="input_time" readonly></input>
+                            <p id="dateappendix" style="display:inline-block"></p>
+                        </button>
+
+                    <button style="display:inline-block" type="button" id='nextdate' class='btn_date_next'></button>
+                </div>
+                <div id="time_line" class="col-sm-12	col-md-8	col-lg-9 div_time_line">
+
+                </div>
+            </div>
+            <div id="main_row" class="row main_row">
+                <div class="col-sm-12	col-md-4	col-lg-3  sidenav">
+                    <div id="listRooms">
+                    </div>
+                </div>
+                <div id="div_diagram" class="col-sm-12	col-md-8	col-lg-9 diagram">
+                    <button id="btn_circle" class="btn_circle">
+                                    <img  src=" img/assets/plus-24.ico "alt="Responsive image ">
+                            </button>
+                    <div id="dialogModal" class="dialog_modal"></div>
+                    <div class="modal" id="event_info_Modal" role="dialog">
+
+
+                        <!-- Modal content-->
+                        <div class="modal-content  block" id="event_info">
+                            <div class="modal-header">
+
+                                <label class="modal-title event_title">Рассуждения о высоком</label>
+                                <button id="btn_circle" class=" btn_edit">
+                                    <img  src=" img/assets/edit.svg "alt="Responsive image ">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <label class="event_time">14 декабря, 15:00 - 17:00 Ржавый Фред </label>
+                                <div class="row" class="row_event_users">
+                                    <div class="col-6 event_user"><img class="event_icon_user" src=" img/assets/darth-vader.svg " alt="Responsive image ">Дарт Вейдер</div>
+                                    <div class="col-6 event_users">и 12 участников</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <script type="text/javascript" src="js/date.js"></script>
+        <script type="text/javascript" src="js/diagrammMeets.js"></script>
+        <script>
+            $("#nextdate").click(setPageTimeNext);
+            $("#agodate").click(setPageTimeAgo);
+            $(".btn_diagram_meet").click(openEventInfo);
+            $("#dialogModal").click(hideModal);
+        </script>
+        <script type="text/javascript ">
+            setDatepickerLocalization($);
+            $("#iddate").datepicker({
+                language: 'ru',
+                buttonText: 'Show Date',
+                dateFormat: 'dd M',
+                numberOfMonths: 3
+            });
+            $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+            function showDatepicker() {
+                $("#iddate").datepicker('show');
+            }
+            $('#iddate').change(function() {
+                changeDateappendix($('#iddate').datepicker("getDate"));
+            });
+        </script>
+    </main>
+
+</body>
+
+
+</html>

@@ -1,0 +1,484 @@
+body {
+    font-family: 'Open Sans', arial;
+    font-size: 13px;
+    text-align: left;
+}
+
+.navbar {
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.btn_cancel_discussion {
+    margin: 15px;
+    width: 80px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.btn_cancel_discussion_redaction_pg {
+    margin: 15px;
+    width: 80px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.btn_create_discussion:active {
+    color: #fff;
+    background-color: #0B00FF;
+    border-color: #0B00FF;
+}
+
+.btn_create_discussion {
+    border-radius: 2px;
+    background-color: #007DFF;
+    color: white;
+}
+
+.btn_create_discussion:focus {
+    color: #fff;
+    background-color: #0059FF;
+    border-color: #0059FF;
+}
+
+.btn_create_discussion:hover {
+    color: #fff;
+    background-color: #0059FF;
+    border-color: #0059FF;
+}
+
+.btn_create_discussion_ {
+    margin: 15px;
+    width: 125px;
+    background-color: #007DFF;
+    color: white;
+}
+
+.btn_create_discussion_:active {
+    color: white;
+    background-color: #0B00FF;
+    border-color: #0B00FF;
+}
+
+
+/*.data_meet_time_labels {}*/
+
+.btn_close_left {
+    margin-right: 10%;
+    margin-top: 0%;
+    margin-bottom: 10px;
+    float: right;
+    touch-action: manipulation;
+    border-color: #ccc;
+    background-image: url('../img/assets/close.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    background-color: #E9ECEF 100%;
+    border: 1px solid transparent;
+}
+
+.btn_create_discussion_:focus {
+    color: white;
+    background-color: #0059FF;
+    border-color: #0059FF;
+}
+
+.btn_create_discussion_:hover {
+    color: white;
+    background-color: #0059FF;
+    border-color: #0059FF;
+}
+
+.input_date_meet {
+    float: right;
+    width: 70%;
+}
+
+.input_date_meet_left {
+    float: left;
+    width: 70%;
+}
+
+.dataMeetStart {
+    width: 40%;
+    height: 34px;
+    margin-left: 5%;
+}
+
+.dataMeet {
+    margin-left: 15%;
+    height: 34px;
+    width: 75%;
+    margin-bottom: 10%;
+}
+
+.dataMeetEnd {
+    height: 34px;
+    width: 40%;
+    float: right;
+}
+
+.meet_page_center {
+    height: 70%;
+}
+
+.meet_page_left_column {
+    height: 100%;
+}
+
+.container-fluid {
+    height: 80%;
+}
+
+.p_new_meet {
+    float: left;
+    margin-top: 0%;
+    margin-left: 16%;
+    width: 50%;
+    font-weight: bold;
+    color: black;
+    font-size: 20px;
+}
+
+.title_row {
+    padding-top: 5%;
+}
+
+
+/*.option_user {}*/
+
+.users_meet {
+    margin-left: 30%;
+    margin-top: 7%;
+    text-align: left;
+}
+
+.meet_page_right_column {
+    height: 100%;
+}
+
+.meet_page_footer {
+    background-color: white;
+    border-top: solid rgba(0, 0, 0, 0.5);
+    text-align: center;
+    height: 10%;
+    margin: 0 auto;
+    border-top-color: #E9ECEF;
+    border-top-width: 1px;
+}
+
+.meet_page_footer_redaction_pg {
+    border-top: solid rgba(0, 0, 0, 0.5);
+    text-align: center;
+    height: 10%;
+    margin: 0 auto;
+    border-top-color: #E9ECEF;
+    border-top-width: 1px;
+}
+
+.row_date_meet {
+    margin-left: 30%;
+}
+
+.new_meet_tema {
+    margin-left: 30%;
+}
+
+.input_users {
+    height: 34px;
+    margin-bottom: 1%;
+    width: 70%;
+    float: right;
+}
+
+.users_btn {
+    margin-left: 3%;
+    margin-bottom: 5%;
+}
+
+.startDate_label {
+    padding-left: 5%;
+    width: 45%;
+}
+
+.date_meet_label {
+    margin-left: 15%;
+}
+
+.date_meet_label_phone {
+    margin-left: 15%;
+    display: none;
+}
+
+.data_meet_end_label {
+    padding-left: 15%;
+    width: 15%;
+}
+
+.listbuttos_meets {
+    margin-bottom: 10%;
+}
+
+.buttos_meets_label {
+    margin-top: 7%;
+    text-align: left;
+    margin-left: 7%;
+}
+
+.button_meet {
+    width: 70%;
+    margin-left: 7%;
+    margin-bottom: 1%;
+    background-color: #E9ECEF;
+    color: #000000;
+}
+
+.btn_delete_discussion_desktop {
+    margin: 15px;
+    width: 140px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.btn_save_discussion_redaction_pg_desktop {
+    margin: 15px;
+    width: 101px;
+    background-color: #E9ECEF;
+    color: #080808;
+}
+
+.btn_delete_discussion_phone {
+    margin: 15px;
+    width: 140px;
+    background-color: white;
+    color: red;
+}
+
+.row_delete_discussion_phone {
+    display: none;
+    border-bottom-width: 8px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(233, 236, 239);
+}
+
+.closebtn {
+    padding-left: 10px;
+    color: #888;
+    font-weight: bold;
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.closebtn:hover {
+    color: #000;
+}
+
+.chip {
+    padding: 0 5px;
+    display: inline-block;
+    padding: 0 10px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 20px;
+    border-radius: 25px;
+    background-color: #f1f1f1;
+}
+
+.closeImg {
+    opacity: 0.5;
+    float: right;
+    margin-left: 5px;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+}
+
+.chipIcon {
+    float: left;
+    margin: 0 10px 0 -8px;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+
+@media screen and (min-width: 361px) and (max-width: 767px) {
+    .p_new_meet {
+        margin-left: 10%;
+    }
+    .button_meet {
+        /*  width: 70%;*/
+        margin-left: 11%;
+        margin-bottom: 1%;
+        /* background-color: #E9ECEF;
+        color: #000000;*/
+    }
+    .buttos_meets_label {
+        margin-top: 0%;
+        margin-left: 10%;
+    }
+    .users_meet {
+        margin-left: 10%;
+        margin-top: 0%;
+    }
+    .startDate_label {
+        padding-left: 10%;
+        width: 40%;
+    }
+    .input_users {
+        margin-left: 10%;
+        margin-right: 10%;
+        width: 80%;
+    }
+    .new_meet_tema {
+        margin-left: 10%;
+    }
+    .date_meet_label {
+        margin-left: 10%;
+    }
+    .dataMeet {
+        margin-left: 10%;
+        margin-bottom: 10%;
+        width: 80%;
+    }
+    .dataMeetStart {
+        width: 30%;
+        margin-left: 10%;
+    }
+    .dataMeetEnd {
+        float: none;
+        width: 30%;
+    }
+    .data_meet_end_label {
+        padding-left: 1%;
+        width: 15%;
+    }
+    .users_btn {
+        margin-left: 3%;
+    }
+    .row_date_meet {
+        margin-left: 10%;
+    }
+}
+
+@media screen and (max-width: 460px) {
+    .meet_page_footer_redaction_pg {
+        border-top-width: 8px;
+        border-top-style: solid;
+        border-top-color: rgb(233, 236, 239);
+        height: 30%;
+    }
+    .dataMeet {
+        margin-bottom: 2%;
+        margin-left: 10%;
+        width: 80%;
+    }
+    .data_meet_time_labels {
+        display: none;
+    }
+    .row_date_meet {
+        border-bottom-width: 8px;
+        border-bottom-style: solid;
+        border-bottom-color: rgb(233, 236, 239);
+    }
+    .p_new_meet {
+        margin-left: 7%;
+    }
+    .button_meet {
+        /**width: 70%;*/
+        margin-left: 11%;
+        margin-bottom: 1%;
+        /*  background-color: #E9ECEF;
+        color: #000000;*/
+    }
+    .buttos_meets_label {
+        margin-top: 0%;
+        margin-left: 10%;
+    }
+    .users_btn {
+        margin-left: 3%;
+    }
+    .row_date_meet {
+        margin-left: 10%;
+    }
+    .users_meet {
+        margin-left: 10%;
+        margin-top: 0%;
+    }
+    .startDate_label {
+        padding-left: 10%;
+        width: 40%;
+    }
+    .input_users {
+        margin-left: 10%;
+        margin-right: 10%;
+        width: 80%;
+    }
+    .new_meet_tema {
+        margin-left: 10%;
+    }
+    .date_meet_label {
+        margin-left: 10%;
+        display: none;
+    }
+    .dataMeet {
+        margin-left: 10%;
+        width: 80%;
+    }
+    .dataMeetStart {
+        width: 30%;
+        margin-left: 10%;
+    }
+    .dataMeetEnd {
+        float: none;
+        width: 30%;
+    }
+    .data_meet_end_label {
+        padding-left: 1%;
+        width: 15%;
+    }
+    .btn_cancel_discussion {
+        display: none;
+    }
+    .btn_create_discussion_:focus {
+        color: rgba(0, 0, 0, 0.20);
+        background-color: #E5E5E5;
+        border-color: #E5E5E5;
+    }
+    .btn_create_discussion_:hover {
+        color: rgba(0, 0, 0, 0.20);
+        background-color: #E5E5E5;
+        border-color: #E5E5E5;
+    }
+    .btn_create_discussion_ {
+        margin-bottom: 15px;
+        width: 125px;
+        background-color: #E5E5E5;
+        color: #98A9B9;
+        border-color: #98A9B9;
+    }
+    .btn_create_discussion_:active {
+        color: rgba(0, 0, 0, 0.20);
+        background-color: #98A9B9;
+        border-color: #98A9B9;
+    }
+    .date_meet_label_phone {
+        margin-left: 10%;
+        display: block;
+    }
+    .row_delete_discussion_phone {
+        display: block;
+        background-color: white;
+    }
+    .btn_delete_discussion_desktop {
+        display: none;
+    }
+    .btn_save_discussion_redaction_pg_desktop {
+        margin: 15px;
+        width: 80px;
+        background-color: #007DFF;
+        color: #f1f1f1;
+    }
+}

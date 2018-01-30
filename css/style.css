@@ -1,0 +1,302 @@
+    body {
+        font-family: 'Open Sans', arial;
+        font-size: 13px;
+        text-align: left;
+    }
+    
+    main {
+        padding-top: 60px;
+    }
+    
+    .dialog_modal {
+        position: absolute;
+        display: none;
+        width: 100%;
+        height: 100%;
+        z-index: 60;
+    }
+    
+    .navbar {
+        background-color: white;
+        border-bottom: 1px solid #E9ECEF;
+    }
+    
+    .current_date {
+        font-weight: bold;
+        border: none;
+        padding-top: 0px;
+        color: #0B00FF;
+        display: inline-block;
+    }
+    
+    .btn_create_discussion:active {
+        color: #fff;
+        background-color: #0B00FF;
+        border-color: #0B00FF;
+    }
+    
+    .btn_create_discussion {
+        border-radius: 2px;
+        background-color: #007DFF;
+        color: white;
+    }
+    
+    .btn_create_discussion:focus {
+        color: #fff;
+        background-color: #0059FF;
+        border-color: #0059FF;
+    }
+    
+    .btn_create_discussion:hover {
+        color: #fff;
+        background-color: #0059FF;
+        border-color: #0059FF;
+    }
+    
+    .btn_date_next {
+        touch-action: manipulation;
+        border-color: #ccc;
+        background-image: url('../img/assets/arrow.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 50%;
+        height: 17px;
+        width: 17px;
+        background-color: #E9ECEF 100%;
+        border: 1px solid transparent;
+    }
+    
+    .btn_date_ago {
+        touch-action: manipulation;
+        border-color: #ccc;
+        background-image: url('../img/assets/arrow2.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 50%;
+        height: 17px;
+        width: 17px;
+        background-color: #E9ECEF 100%;
+        border: 1px solid transparent;
+    }
+    
+    nav_time {
+        height: 10%;
+    }
+    
+    .main_row {
+        display: flex;
+    }
+    
+    .capacity_full {
+        margin-left: 15px;
+        text-align: left;
+        color: #858E98;
+    }
+    
+    .capacity_notfull {
+        margin-left: 15px;
+        text-align: left;
+        color: black;
+    }
+    
+    .rooms {
+        margin-left: 15px;
+        font-weight: bold;
+        color: black;
+        font-size: 15px;
+        text-align: left;
+        margin-bottom: 0px;
+    }
+    
+    .floors {
+        margin-top: 10%;
+        font-weight: bold;
+        text-align: left;
+        margin-left: 15px;
+        color: #858E98;
+        text-transform: uppercase;
+    }
+    
+    .input_time {
+        font-weight: bold;
+        border: none;
+        padding-top: 0px;
+        color: #0B00FF;
+        display: inline-block;
+        width: 30%;
+        border: none;
+    }
+    
+    .div_calendar {
+        padding-top: 10px;
+        height: 7%;
+        background-color: white;
+    }
+    
+    .div_time_line {
+        height: 7%;
+        background-color: white;
+        min-width: 500px;
+    }
+    
+    .btn_create_discussion {
+        border-radius: 2px;
+        background-color: #007DFF;
+        color: white;
+    }
+    
+    .diagram {
+        padding-right: 0%;
+        min-width: 500px;
+        padding-left: 0%;
+    }
+    
+    .sidenav {
+        background-color: white;
+        height: 100%;
+    }
+    
+    .time_label {
+        margin-top: 10px;
+        width: 6%;
+        color: black;
+        margin-right: 1px;
+        padding-left: 1%;
+        position: relative;
+    }
+    
+    .diagram_grid_th {
+        height: 10px;
+        margin-top: 10px;
+        width: 6%;
+        margin-right: 1px;
+        position: relative;
+        background-color: #F6F7F9;
+        border-right-color: rgb(155, 160, 160);
+        border-right-width: 1px;
+        border-right-style: solid;
+        opacity: 0.7;
+    }
+    
+    .diagram_grid_tr {
+        height: 10vh;
+        position: relative;
+        background-color: #F6F7F9;
+        border-right-color: rgb(155, 160, 160);
+        border-right-width: 1px;
+        border-right-style: solid;
+    }
+    
+    .current_time_label {
+        position: absolute;
+        margin-top: 10px;
+        width: 6%;
+        color: white;
+        z-index: 1;
+        display: inline-block;
+        height: 15px;
+        font-size: 13px;
+        line-height: 15px;
+        border-radius: 25px;
+        background-color: #007DFF;
+    }
+    
+    .div_diagram_meet {
+        opacity: 0.7;
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 25px;
+        background-color: white;
+    }
+    
+    .btn_diagram_meet {
+        opacity: 0.7;
+        position: absolute;
+        z-index: 3;
+        height: 25px;
+        background-color: #99A9B9;
+    }
+    
+    .lb_floor_phone {
+        font-size: larger;
+        position: absolute;
+        left: 10px;
+        z-index: 10;
+        width: 30%;
+        display: none;
+        font-weight: bold;
+        text-align: left;
+        color: #858E98;
+    }
+    
+    .lb_room_phone {
+        position: absolute;
+        left: 10px;
+        z-index: 10;
+        width: 30%;
+        color: black;
+        background-color: white;
+        display: none;
+        border-radius: 4px;
+    }
+    
+    .lb_room_full_phone {
+        color: #99A9B9;
+        display: none;
+    }
+    
+    .vl {
+        position: absolute;
+        border-left: 4px solid #007DFF;
+        height: 100%;
+        z-index: 15;
+        top: 0px;
+    }
+    
+    .btn_circle {
+        z-index: 15;
+        position: absolute;
+        background-color: #007DFF;
+        border: none;
+        padding: 5px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: none;
+        font-size: 16px;
+        margin: 4px 2px;
+        border-radius: 8%;
+    }
+    
+    @media screen and (min-width: 992px) and (max-width: 1130px) {
+        /*    .col-md-10 {
+            width: 75%;
+        }
+        .col-md-2 {
+            width: 25%;
+        }*/
+    }
+    
+    @media screen and (max-width: 767px) {
+        .sidenav {
+            display: none;
+        }
+        .lb_room_phone {
+            display: block;
+        }
+        .lb_room_full_phone {
+            display: block;
+        }
+        .lb_floor_phone {
+            display: block;
+        }
+        .current_time_label {
+            width: 7%;
+        }
+    }
+    
+    @media screen and (max-width: 575px) {
+        .btn_create_discussion {
+            display: none;
+        }
+    }

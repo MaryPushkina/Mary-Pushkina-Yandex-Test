@@ -288,17 +288,80 @@ nav_time {
     margin: 4px 2px;
     border-radius: 8%;
 }
+.block {
+    width: 30%;
+    text-align: left;
+    position: relative;
+    /* margin: 20px;*/
+    background-color: white;
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 8px;
+}
 
+.modal-backdrop {
+    opacity: 0 !important;
+}
+
+.block::before {
+    content: '';
+    position: absolute;
+    left: 3%;
+    top: -20px;
+    border: 10px solid transparent;
+    border-bottom: 10px solid white;
+}
+
+.btn_edit {
+    float: right;
+    margin-top: 5px;
+    margin-right: 15px;
+    background-color: #99A9B9;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+.event_title {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.event_time {
+    margin-left: 10px;
+}
+
+.row_event_users {
+    padding: 10px;
+}
+
+.event_icon_user {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+}
+
+.event_user {
+    padding-left: 5px;
+}
+
+.event_users {
+    color: gray;
+    padding-left: 5px;
+}
 @media screen and (min-width: 992px) and (max-width: 1130px) {
-    /*    .col-md-10 {
-        width: 75%;
+    .block {
+        width: 40%;
     }
-    .col-md-2 {
-        width: 25%;
-    }*/
 }
 
 @media screen and (max-width: 767px) {
+    .block {
+        width: 50%;
+    }
     .sidenav {
         display: none;
     }
@@ -317,6 +380,9 @@ nav_time {
 }
 
 @media screen and (max-width: 575px) {
+    .block {
+        width: 50%;
+    }
     .btn_create_discussion {
         display: none;
     }

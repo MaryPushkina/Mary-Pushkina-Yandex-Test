@@ -15,7 +15,7 @@ type EventViewData = {
 }
 
 type RoomViewData = {
-  room : Room;
+  room: Room;
   isFull: boolean;
   events: EventViewData[];
 }
@@ -33,8 +33,8 @@ type FloorViewData = {
 export class TimeboardComponent implements OnInit, AfterViewInit {
   floors: FloorViewData[] = [];
   selectedEvent: Event;
-  datepickerID : string = "#iddate";
-  dateappendixID : string = "#dateappendix";
+  datepickerID: string = "#iddate";
+  dateappendixID: string = "#dateappendix";
   modalWindowID: string = "#event_info_Modal";
   timelimeColumns: number[] = [];
   oneDay: number = 24 * 60 * 60 * 1000;
@@ -78,31 +78,31 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
 
   initDatepicker() {
     $.datepicker.regional.ru = {
-        closeText: 'Закрыть',
-        prevText: '&#x3c;Пред',
-        nextText: 'След&#x3e;',
-        currentText: 'Сегодня',
-        monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-        ],
-        monthNamesShort: ['Янв', 'Февр', 'Март', 'Апр', 'Май', 'Июнь',
-            'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'
-        ],
-        dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-        dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
-        dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-        weekHeader: 'Нед',
-        dateFormat: 'dd.mm.yy',
-        firstDay: 1,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ''
+      closeText: 'Закрыть',
+      prevText: '&#x3c;Пред',
+      nextText: 'След&#x3e;',
+      currentText: 'Сегодня',
+      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+      ],
+      monthNamesShort: ['Янв', 'Февр', 'Март', 'Апр', 'Май', 'Июнь',
+        'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'
+      ],
+      dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+      dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+      dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+      weekHeader: 'Нед',
+      dateFormat: 'dd.mm.yy',
+      firstDay: 1,
+      isRTL: false,
+      showMonthAfterYear: false,
+      yearSuffix: ''
     };
     $(this.datepickerID).datepicker({
-        language: 'ru',
-        buttonText: 'Show Date',
-        dateFormat: 'dd M',
-        numberOfMonths: 3
+      language: 'ru',
+      buttonText: 'Show Date',
+      dateFormat: 'dd M',
+      numberOfMonths: 3
     });
     $.datepicker.setDefaults($.datepicker.regional['ru']);
     this.selectedDate = new Date();
@@ -131,8 +131,8 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   setPageTimeNext() {
     let datepickField = $(this.datepickerID);
     var currentDate = datepickField.datepicker("getDate");
-   this.selectedDate = new Date(currentDate.getTime() + this.oneDay);
-   this.selectedDate.setHours(0, 0, 0, 0);
+    this.selectedDate = new Date(currentDate.getTime() + this.oneDay);
+    this.selectedDate.setHours(0, 0, 0, 0);
     this.updateDatepicker();
     this.updateData();
   }
@@ -143,19 +143,19 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
     let tomorrow = new Date(now.getTime() + this.oneDay);
     let appendix = "";
     if (this.isDateEqual(date, now)) {
-        appendix = ' -  сегодня';
+      appendix = ' -  сегодня';
     } else if (this.isDateEqual(date, yesterday)) {
-        appendix = ' -  вчера';
+      appendix = ' -  вчера';
     } else if (this.isDateEqual(date, tomorrow)) {
-        appendix = ' -  завтра';
+      appendix = ' -  завтра';
     }
     $(this.dateappendixID).html(appendix);
   }
 
-  isDateEqual(first: Date, second: Date) : boolean {
+  isDateEqual(first: Date, second: Date): boolean {
     return first.getDate() === second.getDate() &&
-           first.getMonth() === second.getMonth() &&
-           first.getFullYear() == second.getFullYear();
+      first.getMonth() === second.getMonth() &&
+      first.getFullYear() == second.getFullYear();
   }
 
   updateData() {
@@ -183,7 +183,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
           let eventViewData: EventViewData = {
             event: event,
             startPosition: Math.min(Math.max(0, (this.getTotalHours(event.dateStart) - this.startHour) / (this.endHour - this.startHour)), 1) * 100,
-            endPosition:  Math.min(Math.max(0, (this.endHour - this.getTotalHours(event.dateEnd))/ (this.endHour - this.startHour)), 1) * 100,
+            endPosition: Math.min(Math.max(0, (this.endHour - this.getTotalHours(event.dateEnd)) / (this.endHour - this.startHour)), 1) * 100,
           };
           roomViewData.events.push(eventViewData);
         }
@@ -192,7 +192,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getTotalHours(date: Date) : number {
+  getTotalHours(date: Date): number {
     return date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
   }
 
@@ -208,4 +208,5 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
       this.router.navigate(['/edit-event', event.id]);
     }
   }
+
 }

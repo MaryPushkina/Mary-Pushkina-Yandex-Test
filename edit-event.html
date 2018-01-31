@@ -9,11 +9,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -27,7 +31,7 @@
                     <div class=" navbar-brand">
                         <img src=" img/assets/logo.svg " alt="Responsive image ">
                     </div>
-                    <button class="btn justify-content-end navbar-toggler-right btn_create_discussion">Создать встречу</button>
+                    <button onclick="newEvent() " class="btn justify-content-end navbar-toggler-right btn_create_discussion">Создать встречу</button>
                 </div>
             </div>
         </nav>
@@ -122,7 +126,7 @@
                 </div>
             </div>
             <form class="form-inline my-2 my-lg-0 justify-content-center">
-                <button type="button" class="  btn btn-primary btn_cancel_discussion_redaction_pg">Отмена</button>
+                <button type="button" onclick="cancel() " class="  btn btn-primary btn_cancel_discussion_redaction_pg">Отмена</button>
                 <button type="button" id="btn_delete_meet_desktop" onclick="dialog_delete_meet()" class="btn btn_delete_discussion_desktop">Удалить встречу</button>
                 <button type="button" onclick="dialog_create_meet() " class="btn  btn-primary btn_save_discussion_redaction_pg_desktop">Создать встречу</button>
 
@@ -130,6 +134,22 @@
         </div>
     </footer>
     <script type="text/javascript " src="js/usersAutocomlete.js"></script>
+    <script type="text/javascript ">
+            $("#dataMeet").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            yearRange: "-100:+0",
+            dateFormat: 'dd/MM',
+            numberOfMonths: 3,
+        });
+    function newEvent() {
+        window.location.href = './create-event.html';
+    }
+        function cancel() {
+        window.location.href = './index.html';
+     }
+</script>
 </body>
 
 

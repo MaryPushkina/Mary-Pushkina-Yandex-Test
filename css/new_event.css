@@ -8,7 +8,7 @@ body {
 main {
     padding-top: 60px;
 }
-
+.ui-datepicker{z-index: 99 !important};
 .navbar {
     background-color: white;
     border-bottom: 1px solid #E9ECEF;

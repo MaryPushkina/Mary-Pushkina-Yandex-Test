@@ -9,11 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/jquery-ui.min.css" />
     <script type="text/javascript " src="js/jquery-ui.js"></script>
     <script type="text/javascript " src="js/bootstrap-datepicker.ru.min.js"></script>
@@ -45,9 +48,9 @@
                     <button type="button" id='agodate' class='  btn_date_ago' style="display:inline-block"></button>
 
                     <button class='current_date btn btn-link' type="button" onclick="showDatepicker()" style="display:inline">
-                            <input type="text" id="iddate"  class="input_time" readonly></input>
-                            <p id="dateappendix" style="display:inline-block"></p>
-                        </button>
+                        <input type="text" id="iddate" class="input_time" readonly></input>
+                        <p id="dateappendix" style="display:inline-block"></p>
+                    </button>
 
                     <button style="display:inline-block" type="button" id='nextdate' class='btn_date_next'></button>
                 </div>
@@ -61,9 +64,9 @@
                     </div>
                 </div>
                 <div id="div_diagram" class="col-sm-12	col-md-8	col-lg-9 diagram">
-                    <button id="btn_circle" class="btn_circle">
-                                    <img  src=" img/assets/plus-24.ico "alt="Responsive image ">
-                            </button>
+                    <button id="btn_circle" class="btn_circle" onclick="newEvent()">
+                        <img src=" img/assets/plus-24.ico " alt="Responsive image ">
+                    </button>
                     <div id="dialogModal" class="dialog_modal"></div>
                     <div class="modal" id="event_info_Modal" role="dialog">
 
@@ -74,14 +77,15 @@
 
                                 <label class="modal-title event_title">Рассуждения о высоком</label>
                                 <button id="btn_circle" class=" btn_edit" onclick="editEvent()">
-                                    <img  src=" img/assets/edit.svg "alt="Responsive image ">
+                                    <img src=" img/assets/edit.svg " alt="Responsive image ">
                                 </button>
                             </div>
                             <div class="modal-body">
 
                                 <label class="event_time">14 декабря, 15:00 - 17:00 Ржавый Фред </label>
                                 <div class="row" class="row_event_users">
-                                    <div class="col-6 event_user"><img class="event_icon_user" src=" img/assets/darth-vader.svg " alt="Responsive image ">Дарт Вейдер</div>
+                                    <div class="col-6 event_user">
+                                        <img class="event_icon_user" src=" img/assets/darth-vader.svg " alt="Responsive image ">Дарт Вейдер</div>
                                     <div class="col-6 event_users">и 12 участников</div>
                                 </div>
                             </div>

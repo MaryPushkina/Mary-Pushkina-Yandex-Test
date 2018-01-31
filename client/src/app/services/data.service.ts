@@ -7,16 +7,76 @@ import { Event } from '../model/event';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 
+type GetUserResponse = {
+  user : User;
+}
+
 type GetUsersResponse = {
   users: User[];
+}
+
+type GetRoomResponse = {
+  room: Room;
 }
 
 type GetRoomsResponse = {
   rooms: Room[];
 }
 
+type GetEventResponse = {
+  event: Event;
+}
+
 type GetEventsResponse = {
   events: Event[];
+}
+
+type CreateUserResponse = {
+  createUser: User;
+}
+
+type UpdateUserResponse = {
+  updateUser: User;
+}
+
+type RemoveUserResponse = {
+  removeUser: User;
+}
+
+type CreateRoomResponse = {
+  createRoom: Room;
+}
+
+type UpdateRoomResponse = {
+  updateRoom: Room;
+}
+
+type RemoveRoomResponse = {
+  removeRoom: Room;
+}
+
+type CreateEventResponse = {
+  createEvent: Event;
+}
+
+type UpdateEventResponse = {
+  updateEvent: Event;
+}
+
+type RemoveEventResponse = {
+  removeEvent: Event;
+}
+
+type AddUserToEventResponse = {
+  addUserToEvent: Event;
+}
+
+type RemoveUserFromEventResponse = {
+  removeUserFromEvent: Event;
+}
+
+type ChangeEventRoomResponse = {
+  changeEventRoom : Event;
 }
 
 @Injectable()
@@ -37,6 +97,10 @@ export class DataService {
     return Observable.forkJoin(...tasks);
   }
 
+  getUser(id: number){
+    return this.apollo.query<GetUserResponse>({query: gql`{ user(id:${id}) { id, login, avatarUrl, homeFloor } }`});
+  }
+
   getUsers() {
     return this.apollo
       .query<GetUsersResponse>({query: gql`{ users { id, login, avatarUrl, homeFloor } }`})
@@ -45,8 +109,8 @@ export class DataService {
       })
   }
 
-  getUser(id: number){
-    return this.apollo.query<GetUsersResponse>({query: gql`{ user(id:${id}) { id, login, avatarUrl, homeFloor } }`});
+  getRoom(id: number) {
+    return this.apollo.query<GetRoomResponse>({query: gql`{ room(id:${id}) { id, title, capacity, floor } }`});
   }
 
   getRooms() {
@@ -57,8 +121,8 @@ export class DataService {
       })
   }
 
-  getRoom(id: number) {
-    return this.apollo.query<GetUsersResponse>({query: gql`{ room(id:${id}) { id, title, capacity, floor } }`});
+  getEvent(id: number) {
+    return this.apollo.query<GetEventResponse>({query: gql`{ event(id:${id}) { id, title, dateStart, dateEnd } }`});
   }
 
   getEvents() {
@@ -69,8 +133,263 @@ export class DataService {
       })
   }
 
-  getEvent(id: number) {
-    return this.apollo.query<GetUsersResponse>({query: gql`{ event(id:${id}) { id, title, dateStart, dateEnd } }`});
+  createUser(userInput: User) {
+    return this.apollo.mutate<CreateUserResponse>(
+    {
+      mutation: gql`mutation
+      {
+        createUser
+        (
+          input:
+          {
+            login: \"${userInput.login}\",
+            avatarUrl: \"${userInput.avatarUrl}\",
+            homeFloor: ${userInput.homeFloor}
+          }
+        )
+        {
+          id,
+          login,
+          homeFloor,
+          avatarUrl
+        }
+      }`
+    });
+  }
+
+  updateUser(userInput: User) {
+    return this.apollo.mutate<UpdateUserResponse>(
+    {
+      mutation: gql`mutation
+      {
+        updateUser
+        (
+          id: ${userInput.id},
+          input:
+          {
+            login: \"${userInput.login}\",
+            avatarUrl: \"${userInput.avatarUrl}\",
+            homeFloor: ${userInput.homeFloor}
+          }
+        )
+        {
+          id,
+          login,
+          homeFloor,
+          avatarUrl
+        }
+      }`
+    });
+  }
+
+  removeUser(id: number) {
+    return this.apollo.mutate<RemoveUserResponse>(
+    {
+      mutation: gql`mutation
+      {
+        removeUser(id: ${id})
+        {
+          id,
+          login,
+          homeFloor,
+          avatarUrl
+        }
+      }`
+    });
+  }
+
+  createRoom(roomInput: Room) {
+    return this.apollo.mutate<CreateRoomResponse>(
+    {
+      mutation: gql`mutation
+      {
+        createRoom
+        (
+          input:
+          {
+            title: \"${roomInput.title}\",
+            capacity: \"${roomInput.capacity}\",
+            floor: ${roomInput.floor}
+          }
+        )
+        {
+          id,
+          title,
+          capacity,
+          floor
+        }
+      }`
+    });
+  }
+
+  updateRoom(roomInput: Room) {
+    return this.apollo.mutate<UpdateRoomResponse>(
+    {
+      mutation: gql`mutation
+      {
+        updateRoom
+        (
+          id: ${roomInput.id},
+          input:
+          {
+            title: \"${roomInput.title}\",
+            capacity: \"${roomInput.capacity}\",
+            floor: ${roomInput.floor}
+          }
+        )
+        {
+          id,
+          title,
+          capacity,
+          floor
+        }
+      }`
+    });
+  }
+
+  removeRoom(id: number) {
+    return this.apollo.mutate<RemoveRoomResponse>(
+    {
+      mutation: gql`mutation
+      {
+        removeRoom(id: ${id})
+        {
+          id,
+          title,
+          capacity,
+          floor
+        }
+      }`
+    });
+  }
+
+  createEvent(eventInput: Event) {
+    let usersIds = [];
+    eventInput.users.forEach(user => usersIds.push(user.id));
+    return this.apollo.mutate<CreateEventResponse>(
+    {
+      mutation: gql`mutation
+      {
+        createEvent
+        (
+          input:
+          {
+            title: \"${eventInput.title}\",
+            dateStart: \"${eventInput.dateStart.toISOString()}\",
+            dateEnd: \"${eventInput.dateEnd.toISOString()}\"
+          }
+          usersIds: ${JSON.stringify(usersIds)},
+          roomId: ${eventInput.room.id}
+        )
+        {
+          id,
+          title,
+          dateStart,
+          dateEnd,
+          users { id },
+          room { id }
+        }
+      }`
+    });
+  }
+
+  updateEvent(eventInput: Event) {
+    return this.apollo.mutate<UpdateEventResponse>(
+    {
+      mutation: gql`mutation
+      {
+        updateEvent
+        (
+          id: ${eventInput.id},
+          input:
+          {
+            title: \"${eventInput.title}\",
+            dateStart: \"${eventInput.dateStart.toISOString()}\",
+            dateEnd: \"${eventInput.dateEnd.toISOString()}\"
+          }
+        )
+        {
+          id,
+          title,
+          dateStart,
+          dateEnd,
+          users { id },
+          room { id }
+        }
+      }`
+    });
+  }
+
+  removeEvent(id: number) {
+    return this.apollo.mutate<RemoveEventResponse>(
+    {
+      mutation: gql`mutation
+      {
+        removeEvent(id: ${id})
+        {
+          id,
+          title,
+          dateStart,
+          dateEnd,
+          users { id },
+          room { id }
+        }
+      }`
+    });
+  }
+
+  addUserToEventEvent(eventId: number, userId: number) {
+    return this.apollo.mutate<AddUserToEventResponse>(
+    {
+      mutation: gql`mutation
+      {
+        addUserToEvent(id: ${eventId}, userId: ${userId})
+        {
+          id,
+          title,
+          dateStart,
+          dateEnd,
+          users { id },
+          room { id }
+        }
+      }`
+    });
+  }
+
+  removeUserFromEventEvent(eventId: number, userId: number) {
+    return this.apollo.mutate<RemoveUserFromEventResponse>(
+    {
+      mutation: gql`mutation
+      {
+        removeUserFromEvent(id: ${eventId}, userId: ${userId})
+        {
+          id,
+          title,
+          dateStart,
+          dateEnd,
+          users { id },
+          room { id }
+        }
+      }`
+    });
+  }
+
+  changeEventRoom(eventId: number, roomId: number) {
+    return this.apollo.mutate<ChangeEventRoomResponse>(
+    {
+      mutation: gql`mutation
+      {
+        changeEventRoom(id: ${eventId}, userId: ${roomId})
+        {
+          id,
+          title,
+          dateStart,
+          dateEnd,
+          users { id },
+          room { id }
+        }
+      }`
+    });
   }
 
   createMockData() {

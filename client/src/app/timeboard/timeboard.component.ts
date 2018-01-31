@@ -1,8 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { Router } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { Room } from '../model/room';
 import { Event } from '../model/event';
+
 declare var $: any;
 declare var jQuery: any;
 
@@ -33,6 +35,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   selectedEvent: Event;
   datepickerID : string = "#iddate";
   dateappendixID : string = "#dateappendix";
+  modalWindowID: string = "#event_info_Modal";
   timelimeColumns: number[] = [];
   oneDay: number = 24 * 60 * 60 * 1000;
   startHour: number = 8;
@@ -41,7 +44,11 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   startDate: Date;
   endDate: Date;
 
-  constructor(private dataService: DataService, private changeDetector: ChangeDetectorRef) {
+  constructor(
+    private dataService: DataService,
+    private changeDetector: ChangeDetectorRef,
+    private router: Router
+  ) {
     for (let hour = this.startHour; hour <= this.endHour; hour++)
       this.timelimeColumns.push(hour);
     let now = new Date();
@@ -192,6 +199,13 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   showEventInfo(event: Event) {
     if (event) {
       this.selectedEvent = event;
+    }
+  }
+
+  editEvent(event: Event) {
+    if (event) {
+      $(this.modalWindowID).modal('toggle');
+      this.router.navigate(['/edit-event', event.id]);
     }
   }
 }

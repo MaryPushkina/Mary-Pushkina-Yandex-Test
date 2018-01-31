@@ -1,20 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { User } from '../model/user';
 import { Room } from '../model/room';
+import { Event } from '../model/event';
 
 declare var $: any;
 declare var jQuery: any;
 declare var swal: any;
-
-type NewEvent = {
-    title: string;
-    dateStart: Date;
-    dateEnd: Date;
-    users: User[];
-    room: Room;
-}
 
 @Component({
   selector: 'app-edit-event',
@@ -22,7 +16,7 @@ type NewEvent = {
   styleUrls: ['../../assets/css/events.css']
 })
 export class EditEventComponent implements OnInit {
-  event: NewEvent;
+  event: Event;
   newUserName: string = "";
   recommendedUsers: User[] = [];
   recommendedRooms: Room[] = [];
@@ -31,15 +25,40 @@ export class EditEventComponent implements OnInit {
   startTimePickerID: string = "#dataMeetStart";
   endTimePickerID: string = "#dataMeetEnd";
 
-  constructor(private dataService: DataService, private changeDetector: ChangeDetectorRef) {
+  constructor(
+    private dataService: DataService,
+    private changeDetector: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     let now = new Date();
     this.event = {
+      id: 0,
       title: "",
       dateStart: now,
       dateEnd: new Date(now.getTime() + this.oneHour),
       users: [],
       room: null
     }
+    this.route.paramMap.subscribe(params => {
+      if (!params.has('id')) {
+        this.router.navigate(['/']);
+        return;
+      }
+      let eventID = parseInt(params.get('id'));
+      console.log("event id to edit is " + eventID);
+      if (isNaN(eventID)) {
+        this.router.navigate(['/']);
+        return;
+      }
+      let eventToEdit = this.dataService.events.find(event => event.id === eventID);
+      if (!eventToEdit) {
+        this.router.navigate(['/']);
+        return;
+      }
+      this.event = eventToEdit;
+      // this.changeDetector.detectChanges();
+    });
   }
 
   ngOnInit() {

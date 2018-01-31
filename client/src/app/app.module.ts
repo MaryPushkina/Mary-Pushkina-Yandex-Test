@@ -18,7 +18,7 @@ import { DataService } from './services/data.service';
 
 const appRoutes: Routes = [
   {
-    path: '',
+    path: 'timeboard',
     component: TimeboardComponent
   },
   {
@@ -26,9 +26,14 @@ const appRoutes: Routes = [
     component: CreateEventComponent
   },
   {
-    path: 'edit-event',
+    path: 'edit-event/:id',
     component: EditEventComponent
   },
+  {
+    path: '',
+    redirectTo: '/timeboard',
+    pathMatch: 'full'
+  }
 ];
 
 @NgModule({
@@ -48,7 +53,10 @@ const appRoutes: Routes = [
     ApolloModule,
     HttpLinkModule
   ],
-  providers: [DataService, { provide: LOCALE_ID, useValue: 'ru' }],
+  providers: [
+    DataService,
+    { provide: LOCALE_ID, useValue: 'ru' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

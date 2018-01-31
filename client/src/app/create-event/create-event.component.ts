@@ -1,20 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { User } from '../model/user';
 import { Room } from '../model/room';
+import { Event } from '../model/event';
 
 declare var $: any;
 declare var jQuery: any;
 declare var swal: any;
-
-type NewEvent = {
-    title: string;
-    dateStart: Date;
-    dateEnd: Date;
-    users: User[];
-    room: Room;
-}
 
 @Component({
   selector: 'app-create-event',
@@ -22,7 +16,7 @@ type NewEvent = {
   styleUrls: ['../../assets/css/events.css']
 })
 export class CreateEventComponent implements OnInit, AfterViewInit {
-  event: NewEvent;
+  event: Event;
   newUserName: string = "";
   recommendedUsers: User[] = [];
   recommendedRooms: Room[] = [];
@@ -31,9 +25,10 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   startTimePickerID: string = "#dataMeetStart";
   endTimePickerID: string = "#dataMeetEnd";
 
-  constructor(private dataService: DataService, private changeDetector: ChangeDetectorRef) {
+  constructor(private dataService: DataService, private changeDetector: ChangeDetectorRef, private route: ActivatedRoute) {
     let now = new Date();
     this.event = {
+      id: 0,
       title: "",
       dateStart: now,
       dateEnd: new Date(now.getTime() + this.oneHour),

@@ -24,6 +24,7 @@ export class EditEventComponent implements OnInit {
   datepickerID: string = "#dataMeet";
   startTimePickerID: string = "#dataMeetStart";
   endTimePickerID: string = "#dataMeetEnd";
+  isRoomRemoved: boolean = false;
 
   constructor(
     private dataService: DataService,
@@ -42,18 +43,18 @@ export class EditEventComponent implements OnInit {
     }
     this.route.paramMap.subscribe(params => {
       if (!params.has('id')) {
-        this.router.navigate(['/']);
+        this.goToTimeboard();
         return;
       }
       let eventID = parseInt(params.get('id'));
       console.log("event id to edit is " + eventID);
       if (isNaN(eventID)) {
-        this.router.navigate(['/']);
+        this.goToTimeboard();
         return;
       }
       let eventToEdit = this.dataService.events.find(event => event.id === eventID);
       if (!eventToEdit) {
-        this.router.navigate(['/']);
+        this.goToTimeboard();
         return;
       }
       this.event = eventToEdit;
@@ -139,11 +140,25 @@ export class EditEventComponent implements OnInit {
   }
 
   removeEvent() {
-
+    swal({
+      icon: "assets/img/emoji1.svg",
+      title: 'Встреча будет удалена безвозвратно',
+      dangerMode: true,
+      buttons: {
+          cancel: "Отмена",
+          true: "Удалить",
+      }
+    })
+    .then((isRemoveConfirmed) => {
+      if (isRemoveConfirmed) {
+        this.dataService.removeEvent(this.event.id);
+        this.goToTimeboard();
+      }
+    });
   }
 
-  cancel() {
-
+  goToTimeboard() {
+    this.router.navigate(['/']);
   }
 
   updateData() {
@@ -176,6 +191,11 @@ export class EditEventComponent implements OnInit {
   isRoomSelected(room: Room) : boolean {
     let isSelected = this.event.room != null && this.event.room.id === room.id;
     return isSelected;
+  }
+
+  removeRoom() {
+    this.isRoomRemoved = true;
+    this.event.room = null;
   }
 
   formatTime(dateTime) : string {

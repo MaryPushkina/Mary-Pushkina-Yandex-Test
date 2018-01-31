@@ -6,7 +6,7 @@
                     <div class=" navbar-brand">
                         <img src="assets/img/logo.svg" alt="Responsive image ">
                     </div>
-                    <button class="btn justify-content-end navbar-toggler-right btn_create_discussion">Создать встречу</button>
+                    <button class="btn justify-content-end navbar-toggler-right btn_create_discussion" (click)="createEvent()">Создать встречу</button>
                 </div>
             </div>
         </nav>
@@ -50,7 +50,7 @@
                             <div *ngFor="let room of floor.rooms" style="position:relative;height:2.9rem;margin-top:0rem;margin-bottom:0.7rem">
                                 <div style="height:1.3rem"></div>
                                 <div class="div_diagram_meet" style="position:absolute;height:1.6rem"></div>
-                                <button *ngFor="let event of room.events" data-toggle="modal" data-target="#event_info_Modal" class="btn_diagram_meet" (click)="showEventInfo(event.event)"
+                                <button *ngFor="let event of room.events" [id]="'event_' + event.event.id" data-toggle="modal" data-target="#event_info_Modal" class="btn_diagram_meet" (click)="showEventInfo(event.event, $event)"
                                     [ngStyle]="{ 'left.%': event.startPosition, 'width.%': (100 - event.endPosition - event.startPosition) }"></button>
                                 <!-- <div style="position:absolute;top:2.9rem;height:0.7rem"></div> -->
                             </div>
@@ -79,10 +79,10 @@
                                 <label class="event_time">{{selectedEvent.dateStart | date:'d MMMM':'':'ru'}}, {{selectedEvent.dateStart | date:'HH:mm'}}
                                     - {{selectedEvent.dateEnd | date:'HH:mm'}}</label>
                                 <div class="row row_event_users">
-                                    <div *ngIf="selectedEvent.users.length>0" class="col-6 event_user">
+                                    <div *ngIf="selectedEvent.users.length > 0" class="col-6 event_user">
                                         <img class="event_icon_user" src="{{selectedEvent.users[0].avatarUrl}}" alt="Responsive image"> {{selectedEvent.users[0].login}}
                                     </div>
-                                    <div class="col-6 event_users">{{selectedEvent.users.length-1}} участников</div>
+                                    <div *ngIf="selectedEvent.users.length > 1" class="col-6 event_users">и еще {{selectedEvent.users.length - 1}} {{getMemebersText(selectedEvent.users.length - 1)}}</div>
                                 </div>
                             </div>
                         </div>

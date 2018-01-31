@@ -5,7 +5,6 @@
                 <div class="navbar-brand">
                     <img src="/assets/img/logo.svg " alt="Responsive image ">
                 </div>
-                <button class="btn justify-content-end navbar-toggler-right btn_create_discussion" (click)="editEvent()">Изменить встречу</button>
             </div>
         </div>
     </nav>
@@ -14,7 +13,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="justify-content-start p_new_meet">Редактивовать встречу</div>
-            <button type="button" class="d-flex justify-content-end btn_close_right" (click)="cancel()"></button>
+            <button type="button" class="d-flex justify-content-end btn_close_right" (click)="goToTimeboard()"></button>
         </div>
         <div class=" row">
             <div class="col-sm-6 col-12">
@@ -73,14 +72,23 @@
             </div>
             <div class="col-sm-6 col-12">
                 <div class="row">
-                    <label class="buttos_meets_label">Рекомендованные переговорки</label>
+                    <label *ngIf="!isRoomRemoved" class="buttos_meets_label">Ваша переговорка</label>
+                    <label *ngIf="isRoomRemoved" class="buttos_meets_label">Рекомендованные переговорки</label>
                 </div>
                 <div class="row ">
-                    <div *ngFor="let room of recommendedRooms" class="col-12">
-                        <button type="button" [ngClass]="{ 'button_meet':true, 'btn':true, 'event_selected_room':isRoomSelected(room)}" (click)="setRoom(room)">
-                            {{formatTime(event.dateStart)}}-{{formatTime(event.dateEnd)}} {{room.title}} {{room.floor}} этаж
+                    <div *ngIf="!isRoomRemoved" class="col-12">
+                        <button type="button" class="button_meet btn event_selected_room">
+                            {{formatTime(event.dateStart)}}-{{formatTime(event.dateEnd)}} {{event.room.title}} {{event.room.floor}} этаж
+                            <img src="assets/img/remove.svg" class="closeImg" (click)="removeRoom()">
                         </button>
                     </div>
+                    <ng-container *ngIf="isRoomRemoved">
+                        <div *ngFor="let room of recommendedRooms" class="col-12">
+                            <button type="button" [ngClass]="{ 'button_meet':true, 'btn':true, 'event_selected_room':isRoomSelected(room)}" (click)="setRoom(room)">
+                                {{formatTime(event.dateStart)}}-{{formatTime(event.dateEnd)}} {{room.title}} {{room.floor}} этаж
+                            </button>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
         </div>
@@ -89,7 +97,7 @@
 <footer class="footer fixed-bottom" style="border-top: 1px solid #E9ECEF; background-color: white;">
     <div class="container">
         <form class="form-inline my-2 my-lg-0 justify-content-center">
-            <button type="button" (click)="cancel()" class="  btn  btn_cancel_discussion_redaction_pg">Отмена</button>
+            <button type="button" (click)="goToTimeboard()" class="  btn  btn_cancel_discussion_redaction_pg">Отмена</button>
             <button type="button" (click)="removeEvent()" id="btn_delete_meet_desktop" class="btn btn_delete_discussion_desktop">Удалить встречу</button>
             <button type="button" (click)="editEvent() " class="btn   btn_save_discussion_redaction_pg_desktop">Изменить встречу</button>
         </form>

@@ -183,6 +183,10 @@ export class DataService {
   }
 
   removeUser(id: number) {
+    let userIndex = this.users.findIndex(user => user.id === id);
+    if (userIndex >= 0) {
+      this.users.splice(userIndex, 1);
+    }
     return this.apollo.mutate<RemoveUserResponse>(
     {
       mutation: gql`mutation
@@ -248,6 +252,10 @@ export class DataService {
   }
 
   removeRoom(id: number) {
+    let roomIndex = this.rooms.findIndex(room => room.id === id);
+    if (roomIndex >= 0) {
+      this.rooms.splice(roomIndex, 1);
+    }
     return this.apollo.mutate<RemoveRoomResponse>(
     {
       mutation: gql`mutation
@@ -321,6 +329,10 @@ export class DataService {
   }
 
   removeEvent(id: number) {
+    let eventIndex = this.events.findIndex(event => event.id === id);
+    if (eventIndex >= 0) {
+      this.events.splice(eventIndex, 1);
+    }
     return this.apollo.mutate<RemoveEventResponse>(
     {
       mutation: gql`mutation

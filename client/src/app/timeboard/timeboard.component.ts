@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { Room } from '../model/room';
 import { Event } from '../model/event';
+import { setTimeout } from 'timers';
 
 declare var $: any;
 declare var jQuery: any;
@@ -41,6 +42,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   startHour: number = 8;
   endHour: number = 23;
   selectedDate: Date;
+  nextDate: Date;
   startDate: Date;
   endDate: Date;
 
@@ -102,12 +104,19 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
       language: 'ru',
       buttonText: 'Show Date',
       dateFormat: 'dd M',
-      numberOfMonths: 3
+      numberOfMonths: 3,
+      onSelect: () => { setTimeout(() => { this.onDatePicked(); }, 10); }
     });
     $.datepicker.setDefaults($.datepicker.regional['ru']);
-    this.selectedDate = new Date();
-    this.selectedDate.setHours(0, 0, 0, 0);
+    this.setSelectedDate(new Date());
     this.updateDatepicker();
+  }
+
+  setSelectedDate(date: Date) {
+    this.selectedDate = date;
+    this.selectedDate.setHours(0, 0, 0, 0);
+    this.nextDate = new Date(this.selectedDate.getTime() + this.oneDay);
+    this.changeDateappendix(this.selectedDate);
   }
 
   showDatepicker() {
@@ -119,22 +128,33 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
     this.changeDateappendix(this.selectedDate);
   }
 
+  onDatePicked() {
+    console.log("date picked");
+    let datepickField = $(this.datepickerID);
+    if (datepickField != null) {
+      let pickedDate = datepickField.datepicker("getDate");
+      this.setSelectedDate(pickedDate);
+      this.updateData();
+      this.changeDetector.detectChanges();
+    }
+  }
+
   setPageTimeAgo() {
     let datepickField = $(this.datepickerID);
     var currentDate = datepickField.datepicker("getDate");
-    this.selectedDate = new Date(currentDate.getTime() - this.oneDay);
-    this.selectedDate.setHours(0, 0, 0, 0);
+    this.setSelectedDate(new Date(currentDate.getTime() - this.oneDay));
     this.updateDatepicker();
     this.updateData();
+    this.changeDetector.detectChanges();
   }
 
   setPageTimeNext() {
     let datepickField = $(this.datepickerID);
     var currentDate = datepickField.datepicker("getDate");
-    this.selectedDate = new Date(currentDate.getTime() + this.oneDay);
-    this.selectedDate.setHours(0, 0, 0, 0);
+    this.setSelectedDate(new Date(currentDate.getTime() + this.oneDay));
     this.updateDatepicker();
     this.updateData();
+    this.changeDetector.detectChanges();
   }
 
   changeDateappendix(date) {
@@ -179,7 +199,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
         events: []
       };
       this.dataService.events.forEach(event => {
-        if (event.room.id === room.id && event.dateStart >= this.startDate && event.dateStart <= this.endDate) {
+        if (event.room && event.room.id === room.id && event.dateStart >= this.selectedDate && event.dateEnd <= this.nextDate) {
           let eventViewData: EventViewData = {
             event: event,
             startPosition: Math.min(Math.max(0, (this.getTotalHours(event.dateStart) - this.startHour) / (this.endHour - this.startHour)), 1) * 100,
@@ -196,17 +216,37 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
     return date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
   }
 
-  showEventInfo(event: Event) {
+  showEventInfo(event: Event, userInput: any) {
     if (event) {
       this.selectedEvent = event;
+      userInput.stopPropagation();
+      $("#dialogModal").attr("style", "display:block");
+      let eventView = $(`#event_${event.id}`);
+      let eventViewOffset = eventView.offset();
+      let centerX = eventViewOffset.left + eventView.outerWidth(true) / 2;
+      let centerY = eventViewOffset.top + eventView.outerHeight(true) / 2;
+      $("#event_info").attr("style", `top: ${centerY + 5}px;left:${centerX - 25}px;`);
+      $(this.modalWindowID).modal('show');
     }
+  }
+
+  createEvent() {
+    this.router.navigate(['/create-event']);
   }
 
   editEvent(event: Event) {
     if (event) {
-      $(this.modalWindowID).modal('toggle');
+      $(this.modalWindowID).modal('hide');
       this.router.navigate(['/edit-event', event.id]);
     }
   }
 
+  getMemebersText(count: number) : string {
+    if (count <= 1)
+      return "участник";
+    else if (count < 5)
+      return "участника";
+    else
+      return "участников";
+  }
 }

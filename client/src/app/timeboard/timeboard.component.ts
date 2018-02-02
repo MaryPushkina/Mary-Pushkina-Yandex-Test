@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { Room } from '../model/room';
 import { Event } from '../model/event';
-import { setTimeout } from 'timers';
 
 declare var $: any;
 declare var jQuery: any;
@@ -70,6 +69,12 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.dataService
+      .fetchData()
+      .subscribe(() => {
+        this.updateData();
+        this.changeDetector.detectChanges();
+      })
   }
 
   ngAfterViewInit() {

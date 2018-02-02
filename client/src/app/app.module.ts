@@ -64,7 +64,7 @@ export class AppModule {
   constructor(apollo: Apollo, httpLink: HttpLink) {
     registerLocaleData(localeRu);
     apollo.create({
-      link: httpLink.create({ uri: 'localhost:3000/graphql' }),
+      link: httpLink.create({ uri: 'http://localhost:3000/graphql' }),
       cache: new InMemoryCache()
     });
   }

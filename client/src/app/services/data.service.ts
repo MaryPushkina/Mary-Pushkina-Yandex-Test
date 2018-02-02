@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { plainToClass } from "class-transformer";
 import gql from 'graphql-tag';
 import { User } from '../model/user';
 import { Room } from '../model/room';
 import { Event } from '../model/event';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/operator/switchMap';
+
 
 type GetUserResponse = {
   user : User;
@@ -89,21 +92,25 @@ export class DataService {
   }
 
   fetchData() {
-    let tasks = [];
-    tasks.push(this.getUsers());
-    tasks.push(this.getRooms());
-    tasks.push(this.getEvents());
-    return Observable.forkJoin(...tasks);
+    let parallelRequests = [];
+    parallelRequests.push(this.getUsers());
+    parallelRequests.push(this.getRooms());
+    return Observable
+      .forkJoin(...parallelRequests)
+      .switchMap(() => this.getEvents());
   }
 
   getUser(id: number){
     let gettingUser$ = this.apollo.query<GetUserResponse>({query: gql `{ user(id:${id}) { id, login, avatarUrl, homeFloor } }`});
     gettingUser$.subscribe(({data}) => {
       if (data.user) {
-        let userIndex = this.users.findIndex(user => user.id === data.user.id);
+        let fetchedUser = plainToClass(User, data.user);
+        let userIndex = this.users.findIndex(user => user.id === fetchedUser.id);
         if (userIndex >= 0) {
-          this.users[userIndex] = data.user;
+          this.users[userIndex] = fetchedUser;
         }
+      } else {
+        console.error(`Failed to receive user ${id}`);
       }
     });
     return gettingUser$;
@@ -112,7 +119,14 @@ export class DataService {
   getUsers() {
     let gettingUsers$ = this.apollo.query<GetUsersResponse>({query: gql `{ users { id, login, avatarUrl, homeFloor } }`});
     gettingUsers$.subscribe(({data}) => {
-      this.users = data.users;
+      if (data.users) {
+        this.users = [];
+        data.users.forEach(rawUser => {
+          this.users.push(plainToClass(User, rawUser));
+        });
+      } else {
+        console.error(`Failed to receive users`);
+      }
     })
     return gettingUsers$;
   }
@@ -121,10 +135,13 @@ export class DataService {
     let gettingRoom$ = this.apollo.query<GetRoomResponse>({query: gql `{ room(id:${id}) { id, title, capacity, floor } }`});
     gettingRoom$.subscribe(({data}) =>{
       if (data.room) {
-        let roomIndex = this.rooms.findIndex(room => room.id === data.room.id);
+        let fetchedRoom = plainToClass(Room, data.room);
+        let roomIndex = this.rooms.findIndex(room => room.id === fetchedRoom.id);
         if (roomIndex >= 0) {
-          this.rooms[roomIndex] = data.room;
+          this.rooms[roomIndex] = fetchedRoom;
         }
+      } else {
+        console.error(`Failed to receive room ${id}`);
       }
     });
     return gettingRoom$;
@@ -133,34 +150,54 @@ export class DataService {
   getRooms() {
     let gettingRooms$ = this.apollo.query<GetRoomsResponse>({query: gql `{ rooms { id, title, capacity, floor } }`});
     gettingRooms$.subscribe(({data}) => {
-      this.rooms = data.rooms;
+      if (data.rooms) {
+        this.rooms = [];
+        data.rooms.forEach(rawRoom => {
+        this.rooms.push(plainToClass(Room, rawRoom));
+        });
+      } else {
+        console.error(`Failed to receive rooms`);
+      }
     })
     return gettingRooms$;
   }
 
   getEvent(id: number) {
-    let gettingEvent$ = this.apollo.query<GetEventResponse>({query: gql `{ event(id:${id}) { id, title, dateStart, dateEnd } }`});
+    let gettingEvent$ = this.apollo.query<GetEventResponse>({query: gql `{ event(id:${id}) { id, title, dateStart, dateEnd, users { id }, room { id } } }`});
     gettingEvent$.subscribe(({data}) => {
       if (data.event) {
-        let eventIndex = this.events.findIndex(event => event.id === data.event.id);
+        let fetchedEvent = plainToClass(Event, data.event);
+        let eventIndex = this.events.findIndex(event => event.id === fetchedEvent.id);
         if (eventIndex >= 0) {
-          this.events[eventIndex] = data.event;
+          this.fixEvent(fetchedEvent);
+          this.events[eventIndex] = fetchedEvent;
         }
+      } else {
+        console.error(`Failed to receive event ${id}`);
       }
     });
     return gettingEvent$;
   }
-
+  
   getEvents() {
-    let gettingEvents$ = this.apollo.query<GetEventsResponse>({query: gql `{ events { id, title, dateStart, dateEnd } }`});
+    let gettingEvents$ = this.apollo.query<GetEventsResponse>({query: gql `{ events { id, title, dateStart, dateEnd, users { id }, room { id } } }`});
     gettingEvents$.subscribe(({data}) => {
-      this.events = data.events;
+      if (data.events) {
+        this.events = [];
+        data.events.forEach(rawEvent => {
+          let event = plainToClass(Event, rawEvent);
+          this.fixEvent(event);
+          this.events.push(event);
+        });
+      } else {
+        console.error(`Failed to receive events`);
+      }
     });
     return gettingEvents$;
   }
 
   createUser(userInput: User) {
-    return this.apollo.mutate<CreateUserResponse>(
+    let creatingUser$ = this.apollo.mutate<CreateUserResponse>(
     {
       mutation: gql `mutation
       {
@@ -181,6 +218,13 @@ export class DataService {
         }
       }`
     });
+    creatingUser$.subscribe(({data}) => {
+      if (data.createUser) {
+        let createdUser = plainToClass(User, <User>data.createUser);// без явного приведения TS не может правильно выбрать plainToClass
+        this.users.push(createdUser);
+      }
+    });
+    return creatingUser$;
   }
 
   updateUser(userInput: User) {
@@ -428,6 +472,25 @@ export class DataService {
         }
       }`
     });
+  }
+
+  fixEvent(event: Event) {
+    event.dateStart = new Date(Date.parse(event.dateStart.toString()));
+    event.dateEnd = new Date(Date.parse(event.dateEnd.toString()));
+    if (event.room) {
+      let roomIndex = this.rooms.findIndex(room => room.id === event.room.id);
+      if (roomIndex >= 0) {
+        event.room = this.rooms[roomIndex];
+      }
+    }
+    event.users.forEach((eventUser, index) => {
+      if (eventUser) {
+        let userIndex = this.users.findIndex(user => user.id === eventUser.id);
+        if (userIndex >= 0) {
+          event.users[index] = this.users[userIndex];
+        }
+      }
+    })
   }
 
   createMockData() {

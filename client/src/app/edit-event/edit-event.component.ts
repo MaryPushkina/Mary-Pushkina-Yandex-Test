@@ -43,17 +43,19 @@ export class EditEventComponent implements OnInit {
     }
     this.route.paramMap.subscribe(params => {
       if (!params.has('id')) {
+        console.error(`no event id specified`);
         this.goToTimeboard();
         return;
       }
       let eventID = parseInt(params.get('id'));
-      console.log("event id to edit is " + eventID);
       if (isNaN(eventID)) {
+        console.error(`event id is Nan`);
         this.goToTimeboard();
         return;
       }
-      let eventToEdit = this.dataService.events.find(event => event.id === eventID);
+      let eventToEdit = this.dataService.events.find(event => event.id == eventID);
       if (!eventToEdit) {
+        console.error(`no event with id = ${eventID}`);
         this.goToTimeboard();
         return;
       }

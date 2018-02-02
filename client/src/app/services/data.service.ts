@@ -101,7 +101,7 @@ export class DataService {
   }
 
   getUser(id: number){
-    let gettingUser$ = this.apollo.query<GetUserResponse>({query: gql `{ user(id:${id}) { id, login, avatarUrl, homeFloor } }`});
+    let gettingUser$ = this.apollo.query<GetUserResponse>({query: gql `{ user(id:${id}) { id, login, avatarUrl, homeFloor } }`, fetchPolicy: 'network-only'});
     gettingUser$.subscribe(({data}) => {
       if (data.user) {
         let fetchedUser = plainToClass(User, data.user);
@@ -110,14 +110,14 @@ export class DataService {
           this.users[userIndex] = fetchedUser;
         }
       } else {
-        console.error(`Failed to receive user ${id}`);
+        console.error(`Failed to get user ${id}`);
       }
     });
     return gettingUser$;
   }
 
   getUsers() {
-    let gettingUsers$ = this.apollo.query<GetUsersResponse>({query: gql `{ users { id, login, avatarUrl, homeFloor } }`});
+    let gettingUsers$ = this.apollo.query<GetUsersResponse>({query: gql `{ users { id, login, avatarUrl, homeFloor } }`, fetchPolicy: 'network-only'});
     gettingUsers$.subscribe(({data}) => {
       if (data.users) {
         this.users = [];
@@ -125,14 +125,14 @@ export class DataService {
           this.users.push(plainToClass(User, rawUser));
         });
       } else {
-        console.error(`Failed to receive users`);
+        console.error(`Failed to get users`);
       }
     })
     return gettingUsers$;
   }
 
   getRoom(id: number) {
-    let gettingRoom$ = this.apollo.query<GetRoomResponse>({query: gql `{ room(id:${id}) { id, title, capacity, floor } }`});
+    let gettingRoom$ = this.apollo.query<GetRoomResponse>({query: gql `{ room(id:${id}) { id, title, capacity, floor } }`, fetchPolicy: 'network-only'});
     gettingRoom$.subscribe(({data}) =>{
       if (data.room) {
         let fetchedRoom = plainToClass(Room, data.room);
@@ -141,14 +141,14 @@ export class DataService {
           this.rooms[roomIndex] = fetchedRoom;
         }
       } else {
-        console.error(`Failed to receive room ${id}`);
+        console.error(`Failed to get room ${id}`);
       }
     });
     return gettingRoom$;
   }
 
   getRooms() {
-    let gettingRooms$ = this.apollo.query<GetRoomsResponse>({query: gql `{ rooms { id, title, capacity, floor } }`});
+    let gettingRooms$ = this.apollo.query<GetRoomsResponse>({query: gql `{ rooms { id, title, capacity, floor } }`, fetchPolicy: 'network-only'});
     gettingRooms$.subscribe(({data}) => {
       if (data.rooms) {
         this.rooms = [];
@@ -156,14 +156,14 @@ export class DataService {
         this.rooms.push(plainToClass(Room, rawRoom));
         });
       } else {
-        console.error(`Failed to receive rooms`);
+        console.error(`Failed to get rooms`);
       }
     })
     return gettingRooms$;
   }
 
   getEvent(id: number) {
-    let gettingEvent$ = this.apollo.query<GetEventResponse>({query: gql `{ event(id:${id}) { id, title, dateStart, dateEnd, users { id }, room { id } } }`});
+    let gettingEvent$ = this.apollo.query<GetEventResponse>({query: gql `{ event(id:${id}) { id, title, dateStart, dateEnd, users { id }, room { id } } }`, fetchPolicy: 'network-only'});
     gettingEvent$.subscribe(({data}) => {
       if (data.event) {
         let fetchedEvent = plainToClass(Event, data.event);
@@ -173,14 +173,14 @@ export class DataService {
           this.events[eventIndex] = fetchedEvent;
         }
       } else {
-        console.error(`Failed to receive event ${id}`);
+        console.error(`Failed to get event ${id}`);
       }
     });
     return gettingEvent$;
   }
   
   getEvents() {
-    let gettingEvents$ = this.apollo.query<GetEventsResponse>({query: gql `{ events { id, title, dateStart, dateEnd, users { id }, room { id } } }`});
+    let gettingEvents$ = this.apollo.query<GetEventsResponse>({query: gql `{ events { id, title, dateStart, dateEnd, users { id }, room { id } } }`, fetchPolicy: 'network-only'});
     gettingEvents$.subscribe(({data}) => {
       if (data.events) {
         this.events = [];
@@ -190,13 +190,14 @@ export class DataService {
           this.events.push(event);
         });
       } else {
-        console.error(`Failed to receive events`);
+        console.error(`Failed to get events`);
       }
     });
     return gettingEvents$;
   }
 
   createUser(userInput: User) {
+    // почему-то приведение типа в mutate не работает
     let creatingUser$ = this.apollo.mutate<CreateUserResponse>(
     {
       mutation: gql `mutation
@@ -228,7 +229,7 @@ export class DataService {
   }
 
   updateUser(userInput: User) {
-    return this.apollo.mutate<UpdateUserResponse>(
+    let updatingUser$ = this.apollo.mutate<UpdateUserResponse>(
     {
       mutation: gql `mutation
       {
@@ -250,30 +251,52 @@ export class DataService {
         }
       }`
     });
+    updatingUser$.subscribe(({data}) => {
+      if (data.updateUser) {
+        let updatedUser = plainToClass(User, <User>data.updateUser);
+        let userIndex = this.users.findIndex(user => user.id === updatedUser.id);
+        if (userIndex >= 0) {
+          this.users[userIndex] = updatedUser;
+        }
+        this.events.forEach(event => {
+          event.users.forEach((user, index) => {
+            if (user.id === updatedUser.id) {
+              event.users[index] = updatedUser;
+            }
+          });
+        });
+      }
+    });
+    return updatingUser$;
   }
 
-  removeUser(id: number) {
-    let userIndex = this.users.findIndex(user => user.id === id);
-    if (userIndex >= 0) {
-      this.users.splice(userIndex, 1);
-    }
-    return this.apollo.mutate<RemoveUserResponse>(
+  removeUser(user: User) {
+    let removingUser$ = this.apollo.mutate<RemoveUserResponse>(
     {
       mutation: gql `mutation
       {
-        removeUser(id: ${id})
+        removeUser(id: ${user.id})
         {
-          id,
-          login,
-          homeFloor,
-          avatarUrl
+          id
         }
       }`
     });
+    removingUser$.subscribe(({data}) => {
+      if (data.removeUser) {
+        let userIndex = this.users.findIndex(x => x.id === user.id);
+        if (userIndex >= 0) {
+          this.users.splice(userIndex, 1);
+        }
+        this.events.forEach(event => {
+          event.users = event.users.filter(x => x.id !== user.id);
+        });
+      }
+    })
+    return removingUser$;
   }
 
   createRoom(roomInput: Room) {
-    return this.apollo.mutate<CreateRoomResponse>(
+    let creatingRoom$ = this.apollo.mutate<CreateRoomResponse>(
     {
       mutation: gql `mutation
       {
@@ -294,10 +317,18 @@ export class DataService {
         }
       }`
     });
+    creatingRoom$.subscribe(({data}) =>
+    {
+      if (data.createRoom) {
+        let createdRoom = plainToClass(Room, <Room>data.createRoom);
+        this.rooms.push(createdRoom);
+      }
+    })
+    return creatingRoom$;
   }
 
   updateRoom(roomInput: Room) {
-    return this.apollo.mutate<UpdateRoomResponse>(
+    let updatingRoom$ = this.apollo.mutate<UpdateRoomResponse>(
     {
       mutation: gql `mutation
       {
@@ -319,32 +350,52 @@ export class DataService {
         }
       }`
     });
+    updatingRoom$.subscribe(({data}) => {
+      if (data.updateRoom) {
+        let updatedRoom = plainToClass(Room, <Room>data.updateRoom);
+        let roomIndex = this.rooms.findIndex(room => room.id === updatedRoom.id);
+        if (roomIndex >= 0) {
+          this.rooms[roomIndex] = updatedRoom;
+        }
+        this.events.forEach(event => {
+          if (event.room && event.room.id === updatedRoom.id) {
+            event.room = updatedRoom;
+          }
+        });
+      }
+    });
+    return updatingRoom$;
   }
 
-  removeRoom(id: number) {
-    let roomIndex = this.rooms.findIndex(room => room.id === id);
-    if (roomIndex >= 0) {
-      this.rooms.splice(roomIndex, 1);
-    }
-    return this.apollo.mutate<RemoveRoomResponse>(
+  removeRoom(room: Room) {
+    let removingRoom$ = this.apollo.mutate<RemoveRoomResponse>(
     {
       mutation: gql `mutation
       {
-        removeRoom(id: ${id})
+        removeRoom(id: ${room.id})
         {
-          id,
-          title,
-          capacity,
-          floor
+          id
         }
       }`
     });
+    removingRoom$.subscribe(({data}) => {
+      let roomIndex = this.rooms.findIndex(x => x.id === room.id);
+      if (roomIndex >= 0) {
+        this.rooms.splice(roomIndex, 1);
+      }
+      this.events.forEach(event => {
+        if (event.room && event.room.id === room.id) {
+          event.room = null;
+        }
+      })
+    });
+    return removingRoom$;
   }
 
   createEvent(eventInput: Event) {
     let usersIds = [];
     eventInput.users.forEach(user => usersIds.push(user.id));
-    return this.apollo.mutate<CreateEventResponse>(
+    let creatingEvent$ = this.apollo.mutate<CreateEventResponse>(
     {
       mutation: gql `mutation
       {
@@ -369,10 +420,17 @@ export class DataService {
         }
       }`
     });
+    creatingEvent$.subscribe(({data}) => {
+      if (data.createEvent) {
+        let createdEvent = plainToClass(Event, <Event>data.createEvent);
+        this.events.push(createdEvent);
+      }
+    });
+    return creatingEvent$;
   }
 
   updateEvent(eventInput: Event) {
-    return this.apollo.mutate<UpdateEventResponse>(
+    let updatingEvent$ = this.apollo.mutate<UpdateEventResponse>(
     {
       mutation: gql `mutation
       {
@@ -396,36 +454,51 @@ export class DataService {
         }
       }`
     });
+    let subscription = updatingEvent$.subscribe(({data}) => {
+      subscription.unsubscribe();
+      if (data.updateEvent) {
+        let updatedEvent = plainToClass(Event, <Event>data.updateEvent);
+        let eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+        if (eventIndex >= 0) {
+          this.events[eventIndex] = updatedEvent;
+        }
+      }
+    });
+    return updatingEvent$;
   }
 
-  removeEvent(id: number) {
-    let eventIndex = this.events.findIndex(event => event.id === id);
-    if (eventIndex >= 0) {
-      this.events.splice(eventIndex, 1);
-    }
-    return this.apollo.mutate<RemoveEventResponse>(
+  removeEvent(event: Event) {
+    let removingEvent$ = this.apollo.mutate<RemoveEventResponse>(
     {
       mutation: gql `mutation
       {
-        removeEvent(id: ${id})
+        removeEvent(id: ${event.id})
         {
-          id,
-          title,
-          dateStart,
-          dateEnd,
-          users { id },
-          room { id }
+          id
         }
-      }`
+      }`,
+      update: (proxy, {data}) => {
+      }
     });
+    removingEvent$.subscribe(({data}) => {
+      if (data.removeEvent) {
+        let eventIndex = this.events.findIndex(x => x.id === event.id);
+        if (eventIndex >= 0) {
+          this.events.splice(eventIndex, 1);
+        } else {
+          console.error(`Failed to remove event ${event.id}`);
+        }
+      }
+    })
+    return removingEvent$;
   }
 
-  addUserToEventEvent(eventId: number, userId: number) {
-    return this.apollo.mutate<AddUserToEventResponse>(
+  addUserToEvent(event: Event, user: User) {
+    let addingUserToEvent$ = this.apollo.mutate<AddUserToEventResponse>(
     {
       mutation: gql `mutation
       {
-        addUserToEvent(id: ${eventId}, userId: ${userId})
+        addUserToEvent(id: ${event.id}, userId: ${user.id})
         {
           id,
           title,
@@ -434,16 +507,29 @@ export class DataService {
           users { id },
           room { id }
         }
-      }`
+      }`,
+      errorPolicy: 'ignore' // из-за бага в Apollo Angular http запрос отправляется дважды, второй вызов приводит в ValidationError, пока просто игнорим
     });
+    let subscription = addingUserToEvent$.subscribe(({data}) => {
+      subscription.unsubscribe();
+      if (data.addUserToEvent) {
+        let updatedEvent = plainToClass(Event, <Event>data.addUserToEvent);
+        this.fixEvent(updatedEvent);
+        let eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+        if (eventIndex >= 0) {
+          this.events[eventIndex] = updatedEvent;
+        }
+      }
+    });
+    return addingUserToEvent$;
   }
 
-  removeUserFromEventEvent(eventId: number, userId: number) {
-    return this.apollo.mutate<RemoveUserFromEventResponse>(
+  removeUserFromEvent(event: Event, user: User) {
+    let removingUserFromEvent$ = this.apollo.mutate<RemoveUserFromEventResponse>(
     {
       mutation: gql `mutation
       {
-        removeUserFromEvent(id: ${eventId}, userId: ${userId})
+        removeUserFromEvent(id: ${event.id}, userId: ${user.id})
         {
           id,
           title,
@@ -454,14 +540,25 @@ export class DataService {
         }
       }`
     });
+    removingUserFromEvent$.subscribe(({data}) => {
+      if (data.removeUserFromEventEvent) {
+        let updatedEvent = plainToClass(Event, <Event>data.updateEvent);
+        this.fixEvent(updatedEvent);
+        let eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+        if (eventIndex >= 0) {
+          this.events[eventIndex] = updatedEvent;
+        }
+      }
+    });
+    return removingUserFromEvent$;
   }
 
-  changeEventRoom(eventId: number, roomId: number) {
-    return this.apollo.mutate<ChangeEventRoomResponse>(
+  changeEventRoom(event: Event, room: Room) {
+    let changingEventRoom$ = this.apollo.mutate<ChangeEventRoomResponse>(
     {
-      mutation: gql`mutation
+      mutation: gql `mutation
       {
-        changeEventRoom(id: ${eventId}, userId: ${roomId})
+        changeEventRoom(id: ${event.id}, roomId: ${room.id})
         {
           id,
           title,
@@ -472,6 +569,17 @@ export class DataService {
         }
       }`
     });
+    changingEventRoom$.subscribe(({data}) => {
+      if (data.changeEventRoom) {
+        let updatedEvent = plainToClass(Event, <Event>data.changeEventRoom);
+        this.fixEvent(updatedEvent);
+        let eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+        if (eventIndex >= 0) {
+          this.events[eventIndex] = updatedEvent;
+        }
+      }
+    });
+    return changingEventRoom$;
   }
 
   fixEvent(event: Event) {

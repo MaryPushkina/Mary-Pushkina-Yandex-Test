@@ -78,7 +78,7 @@
                 <div class="row ">
                     <div *ngFor="let room of recommendedRooms" class="col-12">
                         <button type="button" [ngClass]="{ 'button_meet':true, 'btn':true, 'event_selected_room':isRoomSelected(room)}" (click)="setRoom(room)">
-                            {{formatTime(event.dateStart)}}-{{formatTime(event.dateEnd)}} {{room.title}} {{room.floor}} этаж
+                            {{event.dateStart | date:'HH:mm'}}-{{event.dateEnd | date:'HH:mm'}} {{room.title}} {{room.floor}} этаж
                         </button>
                     </div>
                 </div>

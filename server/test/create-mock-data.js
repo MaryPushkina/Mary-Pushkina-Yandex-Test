@@ -1,5 +1,6 @@
 const HOUR = 60 * 60 * 1000;
 const now = new Date();
+now.setHours(10, 0, 0, 0);
 const oneHourLater = new Date(now.getTime() + HOUR);
 const twoHoursLater = new Date(oneHourLater.getTime() + HOUR);
 const threeHoursLater = new Date(twoHoursLater.getTime() + HOUR);

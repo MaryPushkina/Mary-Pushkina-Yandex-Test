@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { DataService } from '../services/data.service';
 import { User } from '../model/user';
 import { Room } from '../model/room';
@@ -25,7 +26,13 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   startTimePickerID: string = "#dataMeetStart";
   endTimePickerID: string = "#dataMeetEnd";
 
-  constructor(private dataService: DataService, private changeDetector: ChangeDetectorRef, private route: ActivatedRoute) {
+  constructor(
+    private dataService: DataService,
+    private changeDetector: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute,
+    private datePipe: DatePipe
+  ) {
     let now = new Date();
     this.event = {
       id: 0,
@@ -96,26 +103,35 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   }
 
   createEvent() {
-    var dateText = document.createElement("div");
-    var dateTextp1 = document.createElement("p");
-    var dateTextp2 = document.createElement("p");
-    dateTextp1.appendChild(document.createTextNode('14 декабря, 15:00-17:00'));
-    dateTextp2.appendChild(document.createTextNode('Готэм 4 этаж'));
-    dateText.appendChild(dateTextp1);
-    dateText.appendChild(dateTextp2);
+    this.dataService.createEvent(this.event).subscribe(() => {
+      var dateText = document.createElement("div");
+      var dateTextp1 = document.createElement("p");
+      var dateTextp2 = document.createElement("p");
+      dateTextp1.appendChild(document.createTextNode(`${this.datePipe.transform(this.event.dateStart, 'd MMMM', '', 'ru')}, ${this.datePipe.transform(this.event.dateStart, 'HH:mm')} - ${this.datePipe.transform(this.event.dateEnd, 'HH:mm')}`));
+      dateTextp2.appendChild(document.createTextNode(`${this.event.room.title} ${this.event.room.floor} этаж`));
+      dateText.appendChild(dateTextp1);
+      dateText.appendChild(dateTextp2);
 
-    swal({
-      icon: "assets/img/emoji2.svg",
-      title: 'Встреча создана',
-      content: dateText,
-      buttons: {
-          true: "Хорошо",
-      }
+      swal({
+        icon: "assets/img/emoji2.svg",
+        title: 'Встреча создана',
+        content: dateText,
+        buttons: {
+            true: "Хорошо",
+        }
+      })
+      .then(() => {
+        this.goToTimeboard();
+      });
     });
   }
 
   cancel() {
+    this.goToTimeboard();
+  }
 
+  goToTimeboard() {
+    this.router.navigate(['/']);
   }
 
   updateData() {
@@ -148,9 +164,5 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   isRoomSelected(room: Room) : boolean {
     let isSelected = this.event.room != null && this.event.room.id === room.id;
     return isSelected;
-  }
-
-  formatTime(dateTime) : string {
-    return `${dateTime.getHours()}:${dateTime.getMinutes()}`;
   }
 }

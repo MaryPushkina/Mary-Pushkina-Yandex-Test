@@ -78,14 +78,14 @@
                 <div class="row ">
                     <div *ngIf="!isRoomRemoved" class="col-12">
                         <button type="button" class="button_meet btn event_selected_room">
-                            {{formatTime(event.dateStart)}}-{{formatTime(event.dateEnd)}} {{event.room.title}} {{event.room.floor}} этаж
+                            {{event.dateStart | date:'HH:mm'}} - {{event.dateEnd | date:'HH:mm'}} {{event.room.title}} {{event.room.floor}} этаж
                             <img src="assets/img/remove.svg" class="closeImg" (click)="removeRoom()">
                         </button>
                     </div>
                     <ng-container *ngIf="isRoomRemoved">
                         <div *ngFor="let room of recommendedRooms" class="col-12">
                             <button type="button" [ngClass]="{ 'button_meet':true, 'btn':true, 'event_selected_room':isRoomSelected(room)}" (click)="setRoom(room)">
-                                {{formatTime(event.dateStart)}}-{{formatTime(event.dateEnd)}} {{room.title}} {{room.floor}} этаж
+                                {{event.dateStart | date:'HH:mm'}} - {{event.dateEnd | date:'HH:mm'}} {{room.title}} {{room.floor}} этаж
                             </button>
                         </div>
                     </ng-container>
@@ -98,8 +98,8 @@
     <div class="container">
         <form class="form-inline my-2 my-lg-0 justify-content-center">
             <button type="button" (click)="goToTimeboard()" class="  btn  btn_cancel_discussion_redaction_pg">Отмена</button>
-            <button type="button" (click)="removeEvent()" id="btn_delete_meet_desktop" class="btn btn_delete_discussion_desktop">Удалить встречу</button>
-            <button type="button" (click)="editEvent() " class="btn   btn_save_discussion_redaction_pg_desktop">Изменить встречу</button>
+            <button type="button" (click)="removeEvent()" id="btn_delete_meet_desktop" class="btn btn_delete_discussion_desktop" [disabled]="!isRemoveAllowed">Удалить встречу</button>
+            <button type="button" (click)="saveChanges() " class="btn btn_save_discussion_redaction_pg_desktop" [disabled]="!isSaveAllowed">Сохранить</button>
         </form>
     </div>
 </footer>

@@ -22,7 +22,7 @@ module.exports = function(models)
         .then(user =>
         {
           return user
-            .destroy()
+            .destroy({ force: true })
             .then(() => user);
         });
     },
@@ -44,7 +44,12 @@ module.exports = function(models)
     {
       return models.Room
         .findById(id)
-        .then(room => room.destroy());
+        .then(room =>
+        {
+          return room
+            .destroy({ force: true })
+            .then(() => room);
+        });
     },
 
     // Event
@@ -107,7 +112,12 @@ module.exports = function(models)
     {
       return models.Event
         .findById(id)
-        .then(event => event.destroy());
+        .then(event =>
+        {
+          return event
+            .destroy({ force: true })
+            .then(() => event);
+        });
     }
   };
   return mutationResolvers;

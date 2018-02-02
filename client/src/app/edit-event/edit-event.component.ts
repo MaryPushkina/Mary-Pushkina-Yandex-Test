@@ -1,6 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/operator/switchMap';
 import { DataService } from '../services/data.service';
 import { User } from '../model/user';
 import { Room } from '../model/room';
@@ -15,8 +18,9 @@ declare var swal: any;
   templateUrl: './edit-event.component.html',
   styleUrls: ['../../assets/css/events.css']
 })
-export class EditEventComponent implements OnInit {
+export class EditEventComponent implements OnInit, AfterViewInit {
   event: Event;
+  originalEvent: Event;
   newUserName: string = "";
   recommendedUsers: User[] = [];
   recommendedRooms: Room[] = [];
@@ -25,6 +29,8 @@ export class EditEventComponent implements OnInit {
   startTimePickerID: string = "#dataMeetStart";
   endTimePickerID: string = "#dataMeetEnd";
   isRoomRemoved: boolean = false;
+  isSaveAllowed: boolean = true;
+  isRemoveAllowed: boolean = true;
 
   constructor(
     private dataService: DataService,
@@ -53,14 +59,15 @@ export class EditEventComponent implements OnInit {
         this.goToTimeboard();
         return;
       }
-      let eventToEdit = this.dataService.events.find(event => event.id == eventID);
+      let eventToEdit = this.dataService.events.find(event => event.id == eventID); // почему-то '===' здесь не работает, хотя оба значения должны быть одного типа Number
       if (!eventToEdit) {
         console.error(`no event with id = ${eventID}`);
         this.goToTimeboard();
         return;
       }
-      this.event = eventToEdit;
-      // this.changeDetector.detectChanges();
+      this.originalEvent = eventToEdit;
+      this.event = Object.assign(Object.create(eventToEdit), eventToEdit);
+      this.event.users = eventToEdit.users.slice();
     });
   }
 
@@ -122,26 +129,57 @@ export class EditEventComponent implements OnInit {
     }
   }
 
-  editEvent() {
-    var dateText = document.createElement("div");
-    var dateTextp1 = document.createElement("p");
-    var dateTextp2 = document.createElement("p");
-    dateTextp1.appendChild(document.createTextNode('14 декабря, 15:00-17:00'));
-    dateTextp2.appendChild(document.createTextNode('Готэм 4 этаж'));
-    dateText.appendChild(dateTextp1);
-    dateText.appendChild(dateTextp2);
-
-    swal({
-      icon: "assets/img/emoji2.svg",
-      title: 'Встреча создана',
-      content: dateText,
-      buttons: {
-          true: "Хорошо",
+  saveChanges() {
+    console.log("Saving changes");
+    this.isSaveAllowed = false;
+    this.isRemoveAllowed = false;
+    this.event.dateStart = this.originalEvent.dateStart;
+    this.event.dateEnd = this.originalEvent.dateEnd;
+    let parallelRequests = [];
+    parallelRequests.push(this.dataService.updateEvent(this.event));
+    this.originalEvent.users.forEach(user => {
+      let isUserRemoved = this.event.users.findIndex(x => x.id === user.id) < 0;
+      if (isUserRemoved) {
+        console.log(`removing user ${user.id}`);
+        parallelRequests.push(this.dataService.removeUserFromEvent(this.event, user));
       }
-    });
+    })
+    this.event.users.forEach(user => {
+      let isUserAdded = this.originalEvent.users.findIndex(x => x.id === user.id) < 0;
+      if (isUserAdded) {
+        console.log(`adding user ${user.id}`);
+        parallelRequests.push(this.dataService.addUserToEvent(this.event, user));
+      }
+    })
+    if (this.event.room.id !== this.originalEvent.room.id) {
+      console.log(`changing room ${this.event.room.id}`);
+      parallelRequests.push(this.dataService.changeEventRoom(this.event, this.event.room));
+    }
+    console.log(`requests count ${parallelRequests.length}`);
+    Observable
+      .forkJoin(...parallelRequests)
+      .subscribe(() => {
+          this.isSaveAllowed = true;
+          this.isRemoveAllowed = true;
+          this.originalEvent = this.dataService.events.find(event => event.id === this.originalEvent.id);
+          swal({
+          icon: "assets/img/emoji2.svg",
+          title: 'Встреча была успешно изменена',
+          buttons: {
+              cancel: "Редактировать еще",
+              true: "Хорошо",
+          }
+        })
+        .then((ok) => {
+          if (ok) {
+            this.goToTimeboard();
+          }
+        });
+      });
   }
 
   removeEvent() {
+    this.isRemoveAllowed = false;
     swal({
       icon: "assets/img/emoji1.svg",
       title: 'Встреча будет удалена безвозвратно',
@@ -152,9 +190,11 @@ export class EditEventComponent implements OnInit {
       }
     })
     .then((isRemoveConfirmed) => {
+      this.isRemoveAllowed = true;
       if (isRemoveConfirmed) {
-        this.dataService.removeEvent(this.event.id);
-        this.goToTimeboard();
+        this.dataService.removeEvent(this.event).subscribe(() => {
+          this.goToTimeboard();
+        });
       }
     });
   }
@@ -198,9 +238,5 @@ export class EditEventComponent implements OnInit {
   removeRoom() {
     this.isRoomRemoved = true;
     this.event.room = null;
-  }
-
-  formatTime(dateTime) : string {
-    return `${dateTime.getHours()}:${dateTime.getMinutes()}`;
   }
 }

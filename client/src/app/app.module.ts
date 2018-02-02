@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { DatePipe, CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApolloModule, Apollo } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
@@ -54,6 +54,7 @@ const appRoutes: Routes = [
     HttpLinkModule
   ],
   providers: [
+    DatePipe,
     DataService,
     { provide: LOCALE_ID, useValue: 'ru' }
   ],
@@ -65,7 +66,8 @@ export class AppModule {
     registerLocaleData(localeRu);
     apollo.create({
       link: httpLink.create({ uri: 'http://localhost:3000/graphql' }),
-      cache: new InMemoryCache()
+      cache: new InMemoryCache(),
+      connectToDevTools: true
     });
   }
 }

@@ -24,6 +24,7 @@
                 </div>
                 <div id="time_line" class="col-sm-12 col-md-8 col-lg-9 div_time_line">
                     <label *ngFor="let time of timelimeColumns" class="time_label">{{time}}</label>
+                    <label  *ngIf="isCurrentTimeLineVisible" id="currentTimelabel" class="current_time_label" [ngStyle]="{ 'left.%': currentTimeLineLeftOffset }">{{now | date:'HH:mm'}}</label>
                 </div>
             </div>
             <div id="main_row" class="row main_row">
@@ -31,7 +32,7 @@
                     <div id="listRooms">
                         <div *ngFor="let floor of floors">
                             <p class="floors">{{floor.number}} этаж</p>
-                            <div *ngFor="let room of floor.rooms">
+                            <div *ngFor="let room of floor.rooms" (click)="selectRoom(room.room)">
                                 <p class="rooms">{{room.room.title}}</p>
                                 <p [ngClass]="{'capacity_full':room.isFull, 'capacity_notfull':!room.isFull}" style="margin-bottom:0rem">до {{room.room.capacity}} человек</p>
                             </div>
@@ -49,22 +50,23 @@
                             <div style="height:2.65rem"></div>
                             <div *ngFor="let room of floor.rooms" style="position:relative;height:2.9rem;margin-top:0rem;margin-bottom:0.7rem">
                                 <div style="height:1.3rem"></div>
-                                <div class="div_diagram_meet" style="position:absolute;height:1.6rem"></div>
-                                <button *ngFor="let event of room.events" [id]="'event_' + event.event.id" data-toggle="modal" data-target="#event_info_Modal" class="btn_diagram_meet" (click)="showEventInfo(event.event, $event)"
+                                <div class="div_diagram_meet" style="position:absolute;height:1.6rem" (click)="selectRoom(room.room)"></div>
+                                <button *ngFor="let event of room.events" [id]="'event_' + event.event.id" data-toggle="modal" data-target="#event_info_Modal" class="btn_diagram_meet" (click)="selectRoom(room.room); showEventInfo(event.event, $event);"
                                     [ngStyle]="{ 'left.%': event.startPosition, 'width.%': (100 - event.endPosition - event.startPosition) }"></button>
+                                <button *ngIf="!(!isTimeLineButtonVisible || !isRoomSelected(room.room))" id="btn_circle" class="btn_circle" (click)="createEventInSelectedRoom()" [ngStyle]="{ 'left.%': timeLineButtonOffset }">
+                                    <img src="assets/img/plus-24.ico" alt="Responsive image" style="height:100%; vertical-align:baseline">
+                                </button>
                                 <!-- <div style="position:absolute;top:2.9rem;height:0.7rem"></div> -->
                             </div>
                         </div>
                     </div>
+                    <div *ngIf="isCurrentTimeLineVisible" id="line_current_time" [ngStyle]="{ 'left.%': currentTimeLineLeftOffset }" class="vl"></div>
                     <div *ngFor="let floor of floors">
                         <label class="lb_floor_phone">{{floor.number}} этаж</label>
                         <div *ngFor="let room of floor.rooms">
                             <label class="lb_room_phone lb_room_full_phone">{{room.room.title}}</label>
                         </div>
                     </div>
-                    <button id="btn_circle" class="btn_circle">
-                        <img src="assets/img/plus-24.ico" alt="Responsive image ">
-                    </button>
                     <div id="dialogModal" class="dialog_modal"></div>
                     <div class="modal" id="event_info_Modal" role="dialog">
                         <!-- Modal content-->

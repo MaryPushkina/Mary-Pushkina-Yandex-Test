@@ -43,6 +43,21 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       users: [],
       room: null
     }
+    this.route.queryParamMap.subscribe(params => {
+      if (params.has('room')) {
+        let roomID = parseInt(params.get('room'));
+        if (!isNaN(roomID)) {
+          console.log(`room ${roomID}`);
+          this.event.room = this.dataService.rooms.find(room => room.id == roomID);
+        }
+      };
+      if (params.has('dateStart')) {
+        console.log(`dateStart ${params.get('dateStart')}`);
+        this.event.dateStart = this.getAlignedTime(new Date(Date.parse(params.get('dateStart'))));
+        this.event.dateEnd = new Date(this.event.dateStart.getTime() + this.oneHour);
+      }
+      this.updateDateTimePickers();
+    });
   }
 
   ngOnInit() {
@@ -50,6 +65,7 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.initDateTimePickers();
+    this.updateDateTimePickers();
     this.updateData();
     this.changeDetector.detectChanges();
   }
@@ -75,6 +91,12 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     };
     $(this.startTimePickerID).timepicker(timepickerOptions);
     $(this.endTimePickerID).timepicker(timepickerOptions);
+  }
+
+  updateDateTimePickers() {
+    $(this.datepickerID).datepicker("setDate", this.event.dateStart);
+    $(this.startTimePickerID).timepicker("setTime", this.event.dateStart);
+    $(this.endTimePickerID).timepicker("setTime", this.event.dateEnd);
   }
 
   tryAddUser() {
@@ -161,6 +183,16 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     if (this.event.dateEnd < this.event.dateStart) {
       this.event.dateStart = this.event.dateStart;
     }
+  }
+
+  getAlignedTime(time: Date) : Date {
+    let minutes = Math.ceil(time.getMinutes() / 15) * 15;
+    if (minutes >= 60) {
+      time.setHours(time.getHours() + 1, 0, 0, 0);
+    } else {
+      time.setMinutes(minutes, 0, 0);
+    }
+    return time;
   }
 
   isRoomSelected(room: Room) : boolean {

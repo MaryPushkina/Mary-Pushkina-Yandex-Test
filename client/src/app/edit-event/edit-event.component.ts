@@ -69,6 +69,7 @@ export class EditEventComponent implements OnInit, AfterViewInit {
       this.originalEvent = eventToEdit;
       this.event = Object.assign(Object.create(eventToEdit), eventToEdit);
       this.event.users = eventToEdit.users.slice();
+      this.updateDateTimePickers();
     });
   }
 
@@ -77,6 +78,7 @@ export class EditEventComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.initDateTimePickers();
+    this.updateDateTimePickers();
     this.updateData();
     this.changeDetector.detectChanges();
   }
@@ -102,6 +104,12 @@ export class EditEventComponent implements OnInit, AfterViewInit {
     };
     $(this.startTimePickerID).timepicker(timepickerOptions);
     $(this.endTimePickerID).timepicker(timepickerOptions);
+  }
+
+  updateDateTimePickers() {
+    $(this.datepickerID).datepicker("setDate", this.event.dateStart);
+    $(this.startTimePickerID).timepicker("setTime", this.event.dateStart);
+    $(this.endTimePickerID).timepicker("setTime", this.event.dateEnd);
   }
 
   tryAddUser() {

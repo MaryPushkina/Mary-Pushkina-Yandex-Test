@@ -33,6 +33,7 @@ type FloorViewData = {
 export class TimeboardComponent implements OnInit, AfterViewInit {
   floors: FloorViewData[] = [];
   selectedEvent: Event;
+  selectedRoom: Room;
   datepickerID: string = "#iddate";
   dateappendixID: string = "#dateappendix";
   modalWindowID: string = "#event_info_Modal";
@@ -40,10 +41,16 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   oneDay: number = 24 * 60 * 60 * 1000;
   startHour: number = 8;
   endHour: number = 23;
+  now: Date;
   selectedDate: Date;
   nextDate: Date;
   startDate: Date;
   endDate: Date;
+  isCurrentTimeLineVisible: boolean = true;
+  currentTimeLineLeftOffset: number = 0;
+  buttonTime: Date;
+  isTimeLineButtonVisible: boolean = true;
+  timeLineButtonOffset: number = 0;
 
   constructor(
     private dataService: DataService,
@@ -113,7 +120,6 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   }
 
   onDatePicked() {
-    console.log("date picked");
     let datepickField = $(this.datepickerID);
     if (datepickField != null) {
       let pickedDate = datepickField.datepicker("getDate");
@@ -163,9 +169,10 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   }
 
   updateData() {
-    this.startDate = new Date();
+    this.now = new Date();
+    this.startDate = new Date(this.selectedDate.getTime());
     this.startDate.setHours(this.startHour, 0, 0, 0);
-    this.endDate = new Date();
+    this.endDate = new Date(this.selectedDate.getTime());
     this.endDate.setHours(this.endHour, 0, 0, 0);
     this.floors = [];
     this.dataService.rooms.forEach(room => {
@@ -194,6 +201,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
       });
       floorViewData.rooms.push(roomViewData);
     });
+    this.updateCurrentTimeLine();
   }
 
   getTotalHours(date: Date): number {
@@ -215,7 +223,11 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   }
 
   createEvent() {
-    this.router.navigate(['/create-event']);
+    this.router.navigate(['/create-event'], { queryParams: {dateStart: this.buttonTime.toISOString() } });
+  }
+
+  createEventInSelectedRoom() {
+    this.router.navigate(['/create-event'], { queryParams: { room: this.selectedRoom.id.toString(), dateStart: this.buttonTime.toISOString() } });
   }
 
   editEvent(event: Event) {
@@ -232,5 +244,37 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
       return "участника";
     else
       return "участников";
+  }
+
+  selectRoom(room: Room) {
+    this.selectedRoom = room;
+  }
+
+  isRoomSelected(room: Room) : boolean {
+    return this.selectedRoom && this.selectedRoom.id === room.id;
+  }
+
+  updateCurrentTimeLine() {
+    this.isCurrentTimeLineVisible = this.now.getTime() >= this.startDate.getTime() && this.now.getTime() <= this.endDate.getTime();
+    this.currentTimeLineLeftOffset = (this.now.getTime() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime()) * 100;
+    this.buttonTime = this.startDate;
+    if (this.now > this.startDate) {
+      this.buttonTime = this.now;
+    }
+    if (this.selectedRoom) {
+      this.floors.forEach(floor => {
+        floor.rooms.forEach(room => {
+          if (room.room.id  === this.selectedRoom.id) {
+            room.events.forEach(event => {
+              if (event.event.dateEnd > this.buttonTime) {
+                this.buttonTime = event.event.dateEnd;
+              }
+            })
+          }
+        })
+      })
+    }
+    this.isTimeLineButtonVisible = this.isCurrentTimeLineVisible && this.buttonTime.getTime() >= this.startDate.getTime() && this.buttonTime.getTime() < this.endDate.getTime();
+    this.timeLineButtonOffset = (this.buttonTime.getTime() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime()) * 100;
   }
 }

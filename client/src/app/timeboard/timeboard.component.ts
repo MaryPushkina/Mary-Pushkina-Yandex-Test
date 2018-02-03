@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { Room } from '../model/room';
 import { Event } from '../model/event';
+import { datepickerLocalize } from '../utility/datpicker-localize';
 
 declare var $: any;
-declare var jQuery: any;
 
 type EventViewData = {
   event: Event;
@@ -84,27 +84,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
   }
 
   initDatepicker() {
-    $.datepicker.regional.ru = {
-      closeText: 'Закрыть',
-      prevText: '&#x3c;Пред',
-      nextText: 'След&#x3e;',
-      currentText: 'Сегодня',
-      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-      ],
-      monthNamesShort: ['Янв', 'Февр', 'Март', 'Апр', 'Май', 'Июнь',
-        'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'
-      ],
-      dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-      dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
-      dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-      weekHeader: 'Нед',
-      dateFormat: 'dd.mm.yy',
-      firstDay: 1,
-      isRTL: false,
-      showMonthAfterYear: false,
-      yearSuffix: ''
-    };
+    datepickerLocalize();
     $(this.datepickerID).datepicker({
       language: 'ru',
       buttonText: 'Show Date',
@@ -112,7 +92,6 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
       numberOfMonths: 3,
       onSelect: () => { setTimeout(() => { this.onDatePicked(); }, 10); }
     });
-    $.datepicker.setDefaults($.datepicker.regional['ru']);
     this.setSelectedDate(new Date());
     this.updateDatepicker();
   }

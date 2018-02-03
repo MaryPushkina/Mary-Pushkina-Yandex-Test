@@ -8,6 +8,7 @@ import { DataService } from '../services/data.service';
 import { User } from '../model/user';
 import { Room } from '../model/room';
 import { Event } from '../model/event';
+import { datepickerLocalize } from '../utility/datpicker-localize';
 
 declare var $: any;
 declare var jQuery: any;
@@ -81,6 +82,7 @@ export class EditEventComponent implements OnInit, AfterViewInit {
   }
 
   initDateTimePickers() {
+    datepickerLocalize();
     $(this.datepickerID).datepicker({
       changeMonth: true,
       changeYear: true,

@@ -1,7 +1,6 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const pages = require('./pages/routes');
 const graphql = require('./graphql');
 const Sequelize = require('sequelize');
 const scheme = require('./models/scheme');
@@ -43,9 +42,8 @@ app.all('*', function(req, res, next) {
   console.log(`Request body is ${JSON.stringify(req.body)}`);
   next();
 });
-app.use('/', pages);
 app.use('/graphql', graphql(models));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 sequelize
   .sync()
   .then(function()

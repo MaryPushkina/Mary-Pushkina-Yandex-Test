@@ -140,22 +140,18 @@ export class EditEventComponent implements OnInit, AfterViewInit {
     this.originalEvent.users.forEach(user => {
       let isUserRemoved = this.event.users.findIndex(x => x.id === user.id) < 0;
       if (isUserRemoved) {
-        console.log(`removing user ${user.id}`);
         parallelRequests.push(this.dataService.removeUserFromEvent(this.event, user));
       }
     })
     this.event.users.forEach(user => {
       let isUserAdded = this.originalEvent.users.findIndex(x => x.id === user.id) < 0;
       if (isUserAdded) {
-        console.log(`adding user ${user.id}`);
         parallelRequests.push(this.dataService.addUserToEvent(this.event, user));
       }
     })
     if (this.event.room.id !== this.originalEvent.room.id) {
-      console.log(`changing room ${this.event.room.id}`);
       parallelRequests.push(this.dataService.changeEventRoom(this.event, this.event.room));
     }
-    console.log(`requests count ${parallelRequests.length}`);
     Observable
       .forkJoin(...parallelRequests)
       .subscribe(() => {

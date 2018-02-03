@@ -8,6 +8,8 @@ import { Event } from '../model/event';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/publish';
 
 
 type GetUserResponse = {
@@ -101,7 +103,7 @@ export class DataService {
   }
 
   getUser(id: number){
-    let gettingUser$ = this.apollo.query<GetUserResponse>({query: gql `{ user(id:${id}) { id, login, avatarUrl, homeFloor } }`, fetchPolicy: 'network-only'});
+    let gettingUser$ = this.apollo.query<GetUserResponse>({query: gql `{ user(id:${id}) { id, login, avatarUrl, homeFloor } }`, fetchPolicy: 'network-only'}).publish();
     gettingUser$.subscribe(({data}) => {
       if (data.user) {
         let fetchedUser = plainToClass(User, data.user);
@@ -113,11 +115,12 @@ export class DataService {
         console.error(`Failed to get user ${id}`);
       }
     });
+    gettingUser$.connect();
     return gettingUser$;
   }
 
   getUsers() {
-    let gettingUsers$ = this.apollo.query<GetUsersResponse>({query: gql `{ users { id, login, avatarUrl, homeFloor } }`, fetchPolicy: 'network-only'});
+    let gettingUsers$ = this.apollo.query<GetUsersResponse>({query: gql `{ users { id, login, avatarUrl, homeFloor } }`, fetchPolicy: 'network-only'}).publish();
     gettingUsers$.subscribe(({data}) => {
       if (data.users) {
         this.users = [];
@@ -127,12 +130,13 @@ export class DataService {
       } else {
         console.error(`Failed to get users`);
       }
-    })
+    });
+    gettingUsers$.connect();
     return gettingUsers$;
   }
 
   getRoom(id: number) {
-    let gettingRoom$ = this.apollo.query<GetRoomResponse>({query: gql `{ room(id:${id}) { id, title, capacity, floor } }`, fetchPolicy: 'network-only'});
+    let gettingRoom$ = this.apollo.query<GetRoomResponse>({query: gql `{ room(id:${id}) { id, title, capacity, floor } }`, fetchPolicy: 'network-only'}).publish();
     gettingRoom$.subscribe(({data}) =>{
       if (data.room) {
         let fetchedRoom = plainToClass(Room, data.room);
@@ -144,11 +148,12 @@ export class DataService {
         console.error(`Failed to get room ${id}`);
       }
     });
+    gettingRoom$.connect();
     return gettingRoom$;
   }
 
   getRooms() {
-    let gettingRooms$ = this.apollo.query<GetRoomsResponse>({query: gql `{ rooms { id, title, capacity, floor } }`, fetchPolicy: 'network-only'});
+    let gettingRooms$ = this.apollo.query<GetRoomsResponse>({query: gql `{ rooms { id, title, capacity, floor } }`, fetchPolicy: 'network-only'}).publish();
     gettingRooms$.subscribe(({data}) => {
       if (data.rooms) {
         this.rooms = [];
@@ -158,12 +163,13 @@ export class DataService {
       } else {
         console.error(`Failed to get rooms`);
       }
-    })
+    });
+    gettingRooms$.connect();
     return gettingRooms$;
   }
 
   getEvent(id: number) {
-    let gettingEvent$ = this.apollo.query<GetEventResponse>({query: gql `{ event(id:${id}) { id, title, dateStart, dateEnd, users { id }, room { id } } }`, fetchPolicy: 'network-only'});
+    let gettingEvent$ = this.apollo.query<GetEventResponse>({query: gql `{ event(id:${id}) { id, title, dateStart, dateEnd, users { id }, room { id } } }`}).publish();
     gettingEvent$.subscribe(({data}) => {
       if (data.event) {
         let fetchedEvent = plainToClass(Event, data.event);
@@ -176,11 +182,12 @@ export class DataService {
         console.error(`Failed to get event ${id}`);
       }
     });
+    gettingEvent$.connect();
     return gettingEvent$;
   }
   
   getEvents() {
-    let gettingEvents$ = this.apollo.query<GetEventsResponse>({query: gql `{ events { id, title, dateStart, dateEnd, users { id }, room { id } } }`, fetchPolicy: 'network-only'});
+    let gettingEvents$ = this.apollo.query<GetEventsResponse>({query: gql `{ events { id, title, dateStart, dateEnd, users { id }, room { id } } }`}).publish();
     gettingEvents$.subscribe(({data}) => {
       if (data.events) {
         this.events = [];
@@ -193,6 +200,7 @@ export class DataService {
         console.error(`Failed to get events`);
       }
     });
+    gettingEvents$.connect();
     return gettingEvents$;
   }
 
@@ -218,13 +226,14 @@ export class DataService {
           avatarUrl
         }
       }`
-    });
+    }).publish();
     creatingUser$.subscribe(({data}) => {
       if (data.createUser) {
         let createdUser = plainToClass(User, <User>data.createUser);// без явного приведения TS не может правильно выбрать plainToClass
         this.users.push(createdUser);
       }
     });
+    creatingUser$.connect();
     return creatingUser$;
   }
 
@@ -250,7 +259,7 @@ export class DataService {
           avatarUrl
         }
       }`
-    });
+    }).publish();
     updatingUser$.subscribe(({data}) => {
       if (data.updateUser) {
         let updatedUser = plainToClass(User, <User>data.updateUser);
@@ -267,6 +276,7 @@ export class DataService {
         });
       }
     });
+    updatingUser$.connect();
     return updatingUser$;
   }
 
@@ -280,7 +290,7 @@ export class DataService {
           id
         }
       }`
-    });
+    }).publish();
     removingUser$.subscribe(({data}) => {
       if (data.removeUser) {
         let userIndex = this.users.findIndex(x => x.id === user.id);
@@ -292,6 +302,7 @@ export class DataService {
         });
       }
     })
+    removingUser$.connect();
     return removingUser$;
   }
 
@@ -316,7 +327,7 @@ export class DataService {
           floor
         }
       }`
-    });
+    }).publish();
     creatingRoom$.subscribe(({data}) =>
     {
       if (data.createRoom) {
@@ -324,6 +335,7 @@ export class DataService {
         this.rooms.push(createdRoom);
       }
     })
+    creatingRoom$.connect();
     return creatingRoom$;
   }
 
@@ -349,7 +361,7 @@ export class DataService {
           floor
         }
       }`
-    });
+    }).publish();
     updatingRoom$.subscribe(({data}) => {
       if (data.updateRoom) {
         let updatedRoom = plainToClass(Room, <Room>data.updateRoom);
@@ -364,6 +376,7 @@ export class DataService {
         });
       }
     });
+    updatingRoom$.connect();
     return updatingRoom$;
   }
 
@@ -377,7 +390,7 @@ export class DataService {
           id
         }
       }`
-    });
+    }).publish();
     removingRoom$.subscribe(({data}) => {
       let roomIndex = this.rooms.findIndex(x => x.id === room.id);
       if (roomIndex >= 0) {
@@ -389,6 +402,7 @@ export class DataService {
         }
       })
     });
+    removingRoom$.connect();
     return removingRoom$;
   }
 
@@ -419,13 +433,14 @@ export class DataService {
           room { id }
         }
       }`
-    });
+    }).publish();
     creatingEvent$.subscribe(({data}) => {
       if (data.createEvent) {
         let createdEvent = plainToClass(Event, <Event>data.createEvent);
         this.events.push(createdEvent);
       }
     });
+    creatingEvent$.connect();
     return creatingEvent$;
   }
 
@@ -453,9 +468,8 @@ export class DataService {
           room { id }
         }
       }`
-    });
-    let subscription = updatingEvent$.subscribe(({data}) => {
-      subscription.unsubscribe();
+    }).publish();
+   updatingEvent$.subscribe(({data}) => {
       if (data.updateEvent) {
         let updatedEvent = plainToClass(Event, <Event>data.updateEvent);
         let eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
@@ -464,6 +478,7 @@ export class DataService {
         }
       }
     });
+    updatingEvent$.connect();
     return updatingEvent$;
   }
 
@@ -479,7 +494,7 @@ export class DataService {
       }`,
       update: (proxy, {data}) => {
       }
-    });
+    }).publish();
     removingEvent$.subscribe(({data}) => {
       if (data.removeEvent) {
         let eventIndex = this.events.findIndex(x => x.id === event.id);
@@ -490,6 +505,7 @@ export class DataService {
         }
       }
     })
+    removingEvent$.connect();
     return removingEvent$;
   }
 
@@ -507,11 +523,9 @@ export class DataService {
           users { id },
           room { id }
         }
-      }`,
-      errorPolicy: 'ignore' // из-за бага в Apollo Angular http запрос отправляется дважды, второй вызов приводит в ValidationError, пока просто игнорим
-    });
-    let subscription = addingUserToEvent$.subscribe(({data}) => {
-      subscription.unsubscribe();
+      }`
+    }).publish();
+    addingUserToEvent$.subscribe(({data}) => {
       if (data.addUserToEvent) {
         let updatedEvent = plainToClass(Event, <Event>data.addUserToEvent);
         this.fixEvent(updatedEvent);
@@ -521,6 +535,7 @@ export class DataService {
         }
       }
     });
+    addingUserToEvent$.connect();
     return addingUserToEvent$;
   }
 
@@ -539,7 +554,7 @@ export class DataService {
           room { id }
         }
       }`
-    });
+    }).publish();
     removingUserFromEvent$.subscribe(({data}) => {
       if (data.removeUserFromEventEvent) {
         let updatedEvent = plainToClass(Event, <Event>data.updateEvent);
@@ -550,6 +565,7 @@ export class DataService {
         }
       }
     });
+    removingUserFromEvent$.connect();
     return removingUserFromEvent$;
   }
 
@@ -568,7 +584,7 @@ export class DataService {
           room { id }
         }
       }`
-    });
+    }).publish();
     changingEventRoom$.subscribe(({data}) => {
       if (data.changeEventRoom) {
         let updatedEvent = plainToClass(Event, <Event>data.changeEventRoom);
@@ -579,6 +595,7 @@ export class DataService {
         }
       }
     });
+    changingEventRoom$.connect();
     return changingEventRoom$;
   }
 

@@ -65,9 +65,18 @@ export class AppModule {
   constructor(apollo: Apollo, httpLink: HttpLink) {
     registerLocaleData(localeRu);
     apollo.create({
-      link: httpLink.create({ uri: 'http://localhost:3000/graphql' }),
+      link: httpLink.create({}),
       cache: new InMemoryCache(),
-      connectToDevTools: true
+      connectToDevTools: true,
+      defaultOptions: {
+        query: {
+          fetchPolicy: 'network-only',
+          errorPolicy: 'all',
+        },
+        mutate: {
+          errorPolicy: 'all'
+        }
+      }
     });
   }
 }

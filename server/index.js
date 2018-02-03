@@ -17,8 +17,9 @@ const sequelize = new Sequelize(null, null, null,
 scheme(sequelize);
 const models = sequelize.models;
 
-const app = express();
+const clientDistFolder = path.join(__dirname, '../client/dist');
 
+const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.all('*', function(req, res, next) {
@@ -43,7 +44,10 @@ app.all('*', function(req, res, next) {
   next();
 });
 app.use('/graphql', graphql(models));
-app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use(express.static(clientDistFolder));
+app.get('*', function(req, res) {
+  res.sendFile(path.join(clientDistFolder, 'index.html'));
+})
 sequelize
   .sync()
   .then(function()

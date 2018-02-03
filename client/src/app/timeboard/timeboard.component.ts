@@ -74,7 +74,7 @@ export class TimeboardComponent implements OnInit, AfterViewInit {
       .subscribe(() => {
         this.updateData();
         this.changeDetector.detectChanges();
-      })
+      });
   }
 
   ngAfterViewInit() {
